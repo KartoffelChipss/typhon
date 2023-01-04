@@ -9,6 +9,7 @@ function createWindow () {
   const mainWindow = new BrowserWindow({
     width: 1400,
     height: 1000,
+    icon: __dirname + '/typhon_gradient.ico',
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
