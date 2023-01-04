@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <!--<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'">-->
+    <link href="./styles.css" rel="stylesheet">
+    <title>Typhon</title>
+  </head>
+  <body>
+    <div class="top">
+      <button class="moveBtn" type="button" id="backBtn" style="margin-left: 5px;" onclick="goBack()"><i class="material-icons" style="padding-top: 3.5px; padding-right: 1px; padding-left: -1px;">chevron_left</i></button>
+      <button class="moveBtn" type="button" id="forwardBtn" onclick="goForward()"><i class="material-icons" style="padding-top: 3.5px; padding-left: 1px; padding-right: -1px;">chevron_right</i></button>
+      <button class="reloadBtn" type="button" id="reloadBtn" onclick="reloadPage()"><i class="material-icons" style="padding-top: 3.5px;">refresh</i></button>
+      <input class="url" id="url" type="text" placeholder="URL eingeben oder mit Google suchen" onkeydown="go()">
+    </div>
+    <webview id="myWebview" src="https://google.com"></webview>
+    
+    <script src="./script.js"></script>
+  </body>
+</html>

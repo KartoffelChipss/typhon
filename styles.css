@@ -1,0 +1,83 @@
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+
+:root {
+    --top-height: 53px;
+}
+
+i.material-icons{font-family:'Material Icons';font-weight:400;font-style:normal;font-size:24px;line-height:1;letter-spacing:normal;text-transform:none;display:inline-block;word-wrap:normal;-moz-font-feature-settings:'liga';font-feature-settings:'liga';-webkit-font-feature-settings:'liga';-webkit-font-smoothing:antialiased}
+
+body {
+    padding: 0;
+    margin: 0;
+}
+
+.top {
+    position: fixed;
+    display: flex;
+    align-items: center;
+    top: 0;
+    background-color: #2D2D2D;
+    width: 100%;
+    height: var(--top-height);
+    margin: 0;
+}
+
+.top button.reloadBtn {
+    border: none;
+    outline: none;
+    background-color: transparent;
+    color: #E0E0E0;
+    border-radius: 100%;
+    transition: all .2s ease-in-out;
+}
+
+.top button.reloadBtn:hover {
+    background-color: #3F3F3F;
+    cursor: pointer;
+}
+
+.top button.moveBtn {
+    border: none;
+    outline: none;
+    background-color: transparent;
+    color: #9c9c9c;
+    border-radius: 100%;
+    transition: all .2s ease-in-out;
+}
+
+.top button.moveBtn:hover {
+    background-color: transparent;
+    cursor: default;
+}
+
+.top button.moveBtn.enabled {
+    color: #E0E0E0;
+}
+
+.top button.moveBtn.enabled:hover {
+    background-color: #3F3F3F;
+    cursor: pointer;
+}
+
+.top input[type="text"] {
+    border: none;
+    padding: 6px 10px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #E0E0E0;
+    border-radius: 13px;
+    background-color: #3F3F3F;
+    width: max-content;
+    flex-grow: 1;
+    margin: 0 5px;
+}
+
+.top input[type="text"]:focus {
+    outline: none;
+    border: turquoise solid 2px;
+}
+
+webview {
+    margin-top: var(--top-height);
+    height: calc(100vh - var(--top-height));
+}
