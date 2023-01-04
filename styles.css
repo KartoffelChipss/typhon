@@ -74,7 +74,7 @@ body {
 
 .top input[type="text"]:focus {
     outline: none;
-    border: turquoise solid 2px;
+    border: #40e0d0 solid 2px;
 }
 
 webview {
