@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@100;200;300;400;500;600;700;800&display=swap');
 
 :root {
     --top-height: 53px;
@@ -9,17 +10,30 @@ i.material-icons{font-family:'Material Icons';font-weight:400;font-style:normal;
 body {
     padding: 0;
     margin: 0;
+    background-color: #111;
+    font-family: 'Sora', sans-serif;
+}
+
+.tab-bg {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: calc(100vh - 93px);
+    background-color: #3F3F3F;
+    z-index: 1;
 }
 
 .top {
     position: fixed;
     display: flex;
     align-items: center;
-    top: 0;
+    top: 40px;
     background-color: #2D2D2D;
+    /*background-color: #2D2D2D;*/
     width: 100%;
     height: var(--top-height);
     margin: 0;
+    z-index: 10;
 }
 
 .top button.reloadBtn {

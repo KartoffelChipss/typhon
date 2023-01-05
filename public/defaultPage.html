@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neuer Tab</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Sora:wght@100;200;300;400;500;600;700;800&display=swap');
+        @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+
+        i.material-icons{font-family:'Material Icons';font-weight:400;font-style:normal;font-size:24px;line-height:1;letter-spacing:normal;text-transform:none;display:inline-block;word-wrap:normal;-moz-font-feature-settings:'liga';font-feature-settings:'liga';-webkit-font-feature-settings:'liga';-webkit-font-smoothing:antialiased}
+
+        body {
+            background: #40E0D0;
+            background: linear-gradient(80deg, #40E0D0 0%, #00ACEE 100%);
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            color: #f5f5f5;
+            font-family: 'Sora', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            width: 100%;
+        }
+
+        .outer-main {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .title {
+            background-color: #2D2D2D;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 35px;
+            border-radius: 13px;
+            margin-top: 50px;
+        }
+
+        .title img {
+            height: 55px;
+            width: auto;
+        }
+
+        .title h1 {
+            margin: 0;
+            font-size: 37px;
+        }
+
+        main {
+            background-color: #2D2D2D;
+            text-align: center;
+            padding: 45px 100px;
+            border-radius: 13px;
+            margin: 10px;
+            margin-top: 50px;
+        }
+
+        main h2 {
+            margin-top: 0;
+            font-size: 27px;
+        }
+
+        main input[type="text"] {
+            border: #2D2D2D solid 2px;
+            padding: 6px 10px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #E0E0E0;
+            border-radius: 13px;
+            background-color: #3F3F3F;
+            width: 200px;
+            font-size: 16px;
+        }
+
+        main input[type="text"]:focus {
+            outline: none;
+            border: #40e0d0 solid 2px;
+        }
+
+        main .searchBox {
+            display: flex;
+            align-items: center;
+        }
+
+        main .searchBox i {
+            margin-left: 5px;
+        }
+
+        main .searchBox i:hover {
+            cursor: pointer;
+        }
+
+        body > footer {
+            position: sticky;
+            top: 100vh;
+        }
+
+        footer {
+            display: flex;
+            justify-content: space-around;
+            padding: 20px 10px;
+            background-color: #2D2D2D;
+            color: #f5f5f5;
+            align-items: center;
+            margin-top: 50px;
+        }
+
+        footer .left {
+            display: flex;
+            align-items: center;
+        }
+
+        footer .left h3 {
+            margin: 0;
+            font-size: 26px;
+        }
+
+        footer .left img {
+            height: 50px;
+            width: auto;
+            margin-right: 5px;
+        }
+
+        footer .right {
+            display: flex;
+            justify-content: right;
+            align-items: center;
+        }
+
+        footer .right a {
+            text-decoration: none;
+            color: #f5f5f5;
+            margin-left: 10px;
+            font-size: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="outer-main">
+        <div class="title">
+            <img src="../typhon_gradient.png">
+            <h1>Typhon</h1>
+        </div>
+    </div>
+
+    <div class="outer-main">
+        <main>
+            <h2>Suche mit Google!</h2>
+            <div class="searchBox">
+                <input type="text" id="googleSearchDefault" placeholder="Gib einen Suchbegriff ein" onkeydown="google()">
+                <i class="material-icons" onclick="googleWithoutEnter()">search</i>
+            </div>
+        </main>
+    </div>
+
+    <footer>
+        <div class="left">
+            <img src="../typhon_gradient.png">
+            <h3>Typhon</h3>
+        </div>
+        <div class="right">
+            <a href="https://github.com/KartoffelChipss/typhon">GitHub</a>
+            <a href="https://chemolino.strassburger.org">Chemolino</a>
+            <a href="https://strassburger.org/">strassburger.org</a>
+        </div>
+    </footer>
+
+    <script defer>
+        const backBtn = document.getElementById("backBtn");
+        const forwardBtn = document.getElementById("forwardBtn");
+        const urlInput = document.getElementById("url");
+
+        function google() {
+            if(event.key === 'Enter') {
+                let googleSearchInput = document.getElementById("googleSearchDefault");
+
+                if (!googleSearchInput.value.trim()) {
+                    return;
+                }
+
+                let search = googleSearchInput.value.replace(/\s/g, "+");
+                window.location.href=`https://google.com/search?q=${search}`;
+            }
+        }
+
+        function googleWithoutEnter() {
+            let googleSearchInput = document.getElementById("googleSearchDefault");
+
+            if (!googleSearchInput.value.trim()) {
+                return;
+            }
+
+            let search = googleSearchInput.value.replace(/\s/g, "+");
+            window.location.href=`https://google.com/search?q=${search}`;
+        }
+    </script>
+
+    <script defer src="../script.js"></script>
+</body>
+</html>

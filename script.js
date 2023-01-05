@@ -1,27 +1,96 @@
+const TabGroup = require("electron-tabs");
 
-const webView = document.getElementById("myWebview");
 const backBtn = document.getElementById("backBtn");
 const forwardBtn = document.getElementById("forwardBtn");
 const urlInput = document.getElementById("url");
 
-// https://www.electronjs.org/de/docs/latest/api/webview-tag
+const tabGroup = document.querySelector("tab-group");
 
-setInterval(function () {
-    if (webView.canGoForward() === true) {
+tabGroup.setDefaultTab({
+    title: "Neuer Tab",
+    src: "file://" +  __dirname + "/public/defaultPage.html",
+    active: true,
+    iconURL: "./typhon_gradient.ico",
+});
+
+const firstTab = tabGroup.addTab({
+    title: "Neuer Tab",
+    src: "file://" +  __dirname + "/public/defaultPage.html",
+    active: true,
+    iconURL: "./typhon_gradient.ico",
+});
+
+tabGroup.on("tab-active", (tab, tabGroup) => {
+    let webviewUrl = tab.webview.getURL();
+    if (!webviewUrl.includes("defaultPage.html") && !webviewUrl.includes("website_not_available.html") && urlInput !== document.activeElement && webviewUrl !== urlInput) {
+        urlInput.value = webviewUrl;
+    }
+
+    if (!webviewUrl.includes("defaultPage.html") && !webviewUrl.includes("website_not_available.html")) {
+        if (tab.webview.canGoForward()) {
+            forwardBtn.classList.add("enabled");
+        } else {
+            forwardBtn.classList.remove("enabled");
+        }
+    
+        if (webView.canGoBack() === true) {
+            backBtn.classList.add("enabled");
+        } else {
+            backBtn.classList.remove("enabled");
+        }
+        
+        tab.setTitle(tab.webview.getTitle())
+    }
+});
+
+tabGroup.on("tab-removed", (tab, tabGroup) => {
+    if (tabGroup.getTabs().length <= 0) {
+        tabGroup.addTab({
+            title: "Neuer Tab",
+            src: "file://" +  __dirname + "/public/defaultPage.html",
+            active: true,
+            iconURL: "./typhon_gradient.ico",
+        });
+    }
+});
+
+tabGroup.getActiveTab().webview.addEventListener('new-window', (e) => {
+    console.log("test")
+    const protocol = require('url').parse(e.url).protocol
+    if (protocol === 'http:' || protocol === 'https:') {
+        tabGroup.addTab({
+            title: "Neuer Tab",
+            src: e.url,
+            active: true,
+            iconURL: "./typhon_gradient.ico",
+        });
+    }
+})
+
+setInterval(() => {
+    let activeTab = tabGroup.getActiveTab();
+    let webviewUrl = activeTab.webview.getURL();
+
+    if (urlInput !== document.activeElement && webviewUrl !== urlInput.value && !webviewUrl.includes("website_not_available.html") && !webviewUrl.includes("defaultPage.html")) {
+        urlInput.value = webviewUrl;
+    }
+
+    activeTab.setTitle(activeTab.webview.getTitle())
+
+    if (activeTab.webview.canGoForward()) {
         forwardBtn.classList.add("enabled");
     } else {
         forwardBtn.classList.remove("enabled");
     }
-    if (webView.canGoBack() === true) {
+
+    if (activeTab.webview.canGoBack() === true) {
         backBtn.classList.add("enabled");
     } else {
         backBtn.classList.remove("enabled");
     }
-
-    if (urlInput !== document.activeElement && webView.getURL() !== urlInput) {
-        urlInput.value = webView.getURL();
-    }
 }, 1000)
+
+// https://www.electronjs.org/de/docs/latest/api/webview-tag
 
 urlInput.addEventListener("focus", function (e) {
     var target = e.currentTarget;
@@ -39,13 +108,14 @@ function goHome() {
 }
 
 function goBack() {
-    webView.goBack();
-    if (webView.canGoForward() === true) {
+    let activeTab = tabGroup.getActiveTab();
+    activeTab.webview.goBack();
+    if (activeTab.webview.canGoForward() === true) {
         forwardBtn.classList.add("enabled");
     } else {
         forwardBtn.classList.remove("enabled");
     }
-    if (webView.canGoBack() === true) {
+    if (activeTab.webview.canGoBack() === true) {
         backBtn.classList.add("enabled");
     } else {
         backBtn.classList.remove("enabled");
@@ -53,30 +123,73 @@ function goBack() {
 }
 
 function goForward() {
-    webView.goForward();
-    if (webView.canGoForward() === true) {
+    let activeTab = tabGroup.getActiveTab();
+    activeTab.webview.goForward();
+    if (activeTab.webview.canGoForward() === true) {
         forwardBtn.classList.add("enabled");
     } else {
         forwardBtn.classList.remove("enabled");
     }
-    if (webView.canGoBack() === true) {
+    if (activeTab.webview.canGoBack() === true) {
         backBtn.classList.add("enabled");
     } else {
         backBtn.classList.remove("enabled");
     }
 }
 
+function isValidHttpUrl(string) {
+    try {
+        const url = new URL(string);
+        return url.protocol === 'http:' || url.protocol === 'https:';
+    } catch (err) {
+        return false;
+    }
+}
+
+function isValidDomain(str) {
+    let regex = new RegExp(/^(?!-)[A-Za-z0-9-]+([\-\.]{1}[a-z0-9]+)*\.[A-Za-z]{2,6}$/);
+
+    if (str == null) {
+        return false;
+    }
+
+    if (regex.test(str) == true) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 function go() {
     if(event.key === 'Enter') {
-        webView.loadURL(urlInput.value);
+        let activeTab = tabGroup.getActiveTab();
+        let urlInputValue = urlInput.value;
+
+        if (!urlInputValue.trim()) {
+            return;
+        }
+
+        if (isValidHttpUrl(urlInputValue)) {
+            activeTab.webview.loadURL(urlInputValue).catch(err => {
+                activeTab.webview.loadURL("file://" +  __dirname + "/public/website_not_available.html");
+            })
+        } else if (isValidDomain(urlInputValue)) {
+            activeTab.webview.loadURL("https://" + urlInputValue).catch(err => {
+                activeTab.webview.loadURL("http://" + urlInputValue).catch(console.error)
+            })
+        } else {
+            let search = urlInputValue.replace(/\s/g, "+");
+            activeTab.webview.loadURL(`https://google.com/search?q=${search}`)
+        }
+
         urlInput.blur();
-        urlInput.value = webView.getURL();
-        if (webView.canGoForward() === true) {
+        urlInput.value = activeTab.webview.getURL();
+        if (activeTab.webview.canGoForward() === true) {
             forwardBtn.classList.add("enabled");
         } else {
             forwardBtn.classList.remove("enabled");
         }
-        if (webView.canGoBack() === true) {
+        if (activeTab.webview.canGoBack() === true) {
             backBtn.classList.add("enabled");
         } else {
             backBtn.classList.remove("enabled");
@@ -84,8 +197,74 @@ function go() {
     }
 }
 
+function google() {
+    console.log("Test")
+    if(event.key === 'Enter') {
+        let activeTab = tabGroup.getActiveTab();
+        let googleSearchInput = document.getElementById("googleSearchDefault");
+
+        if (!googleSearchInput.value.trim()) {
+            return;
+        }
+
+        let search = googleSearchInput.value.replace(/\s/g, "+");
+        activeTab.webview.loadURL(`https://google.com/search?q=${search}`);
+
+        googleSearchInput.blur();
+        googleSearchInput.value = activeTab.webview.getURL();
+        if (activeTab.webview.canGoForward() === true) {
+            forwardBtn.classList.add("enabled");
+        } else {
+            forwardBtn.classList.remove("enabled");
+        }
+        if (activeTab.webview.canGoBack() === true) {
+            backBtn.classList.add("enabled");
+        } else {
+            backBtn.classList.remove("enabled");
+        }     
+    }
+}
+
+function googleWithoutEnter() {
+    let activeTab = tabGroup.getActiveTab();
+    let googleSearchInput = document.getElementById("googleSearchDefault");
+
+    if (!googleSearchInput.value.trim()) {
+        return;
+    }
+
+    let search = googleSearchInput.value.replace(/\s/g, "+");
+    activeTab.webview.loadURL(`https://google.com/search?q=${search}`);
+
+    googleSearchInput.blur();
+    googleSearchInput.value = activeTab.webview.getURL();
+
+    if (activeTab.webview.canGoForward() === true) {
+        forwardBtn.classList.add("enabled");
+    } else {
+        forwardBtn.classList.remove("enabled");
+    }
+
+    if (activeTab.webview.canGoBack() === true) {
+        backBtn.classList.add("enabled");
+    } else {
+        backBtn.classList.remove("enabled");
+    } 
+}
+
 function reloadPage() {
-    webView.reload();
+    let activeTab = tabGroup.getActiveTab();
+    let webviewUrl = activeTab.webview.getURL();
+    if (webviewUrl.includes("website_not_available.html") || webviewUrl.includes("defaultPage.html")) return;
+    activeTab.webview.reload();
     urlInput.blur();
-    urlInput.value = webView.getURL();
+    urlInput.value = activeTab.webview.getURL();
+}
+
+function reloadOnWNF() {
+    console.log("Test")
+    let activeTab = tabGroup.getActiveTab();
+    activeTab.webview.loadURL(urlInput.value).catch(err => {
+        activeTab.webview.loadURL("file://" +  __dirname + "/public/website_not_available.html");
+    });
 }

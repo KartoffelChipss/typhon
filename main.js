@@ -3,8 +3,10 @@ const { Console } = require('console')
 const {app, BrowserWindow, Menu, MenuItem, globalShortcut, webContents} = require('electron')
 const { webFrame } = require('electron/renderer')
 const path = require('path')
+const { ElectronBlocker } = require('@cliqz/adblocker-electron');
+const fetch = require('cross-fetch'); // required 'fetch'
 
-function createWindow () {
+async function createWindow () {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 1400,
@@ -16,6 +18,11 @@ function createWindow () {
       webviewTag: true,
     }
   })
+
+  let blocker = await ElectronBlocker.fromPrebuiltAdsOnly(fetch);
+  blocker = await ElectronBlocker.fromPrebuiltAdsAndTracking(fetch);
+
+  blocker.enableBlockingInSession(mainWindow.webContents.session);
 
   mainWindow.setMenu(null)
 

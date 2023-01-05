@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <meta charset="UTF-8">
     <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
     <!--<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'">-->
@@ -8,16 +8,106 @@
     <title>Typhon</title>
     <link rel="icon" type="image/png" href="./typhon_gradient.png">
     
-  </head>
-  <body>
+</head>
+<body>
+    <div class="tab-bg"></div>
+
     <div class="top">
-      <button class="moveBtn" type="button" id="backBtn" style="margin-left: 5px;" onclick="goBack()"><i class="material-icons" style="padding-top: 3.5px; padding-right: 1px; padding-left: -1px;">chevron_left</i></button>
-      <button class="moveBtn" type="button" id="forwardBtn" onclick="goForward()"><i class="material-icons" style="padding-top: 3.5px; padding-left: 1px; padding-right: -1px;">chevron_right</i></button>
-      <button class="reloadBtn" type="button" id="reloadBtn" onclick="reloadPage()"><i class="material-icons" style="padding-top: 3.5px;">refresh</i></button>
-      <input class="url" id="url" type="text" placeholder="URL eingeben oder mit Google suchen" onkeydown="go()">
+        <button class="moveBtn" type="button" id="backBtn" style="margin-left: 5px;" onclick="goBack()"><i class="material-icons" style="padding-top: 3.5px; padding-right: 1px; padding-left: -1px;">chevron_left</i></button>
+        <button class="moveBtn" type="button" id="forwardBtn" onclick="goForward()"><i class="material-icons" style="padding-top: 3.5px; padding-left: 1px; padding-right: -1px;">chevron_right</i></button>
+        <button class="reloadBtn" type="button" id="reloadBtn" onclick="reloadPage()"><i class="material-icons" style="padding-top: 3.5px;">refresh</i></button>
+        <input class="url" id="url" type="text" placeholder="URL eingeben oder mit Google suchen" onkeydown="go()">
     </div>
-    <webview id="myWebview" src="https://google.com"></webview>
-    
+    <!-- <webview id="myWebview" src="https://google.com"></webview> -->
+    <tab-group new-tab-button="true" sortable="true" id="tabgroup">
+        <style>
+            :host {
+                --tab-border-color: #111;
+            }
+
+            webview {
+                position: fixed;
+                bottom: 0;
+                width: 100%;
+                height: 100%;
+                height: calc(100vh - 93px);
+                border: none;
+                z-index: 8;
+            }
+
+            .nav {
+                padding-top: 5px;
+                padding-left: 5px;
+                height: 35px;
+                background-color: #111;
+                border: none;
+                position: fixed;
+                z-index: 8;
+                top: 0;
+            }
+
+            .tab {
+                background: #111;
+                color: #E0E0E0;
+                border-top-left-radius: 7px;
+                border-top-right-radius: 7px;
+                border: none;
+                margin: 2.5px;
+            }
+
+            .tab-title {
+                width: 90px;
+                white-space: nowrap;
+                overflow-x: hidden;
+            }
+
+            .tab.active {
+                background: #2D2D2D;
+                color: #E0E0E0;
+                border: none;
+            }
+
+            .tab:not(.active):hover {
+                background: #1E1E1E;
+                color: #E0E0E0;
+            }
+
+            .tab-close button {
+                color: #E0E0E0;
+                transition: all .2s ease-in-out;
+            }
+
+            .tab-close button:hover {
+                background-color: #555555;
+                color: #E0E0E0;
+            }
+
+            .tab.visible:not(.active)+.tab.visible:not(.active) {
+                border: none;
+            }
+
+            .buttons {
+                display: flex;
+                align-items: center;
+                padding: 5px;
+            }
+
+            .buttons button {
+                padding: 0;
+                color: #E0E0E0;
+                font-weight: 500;
+                font-size: 17px;
+                padding-bottom: 1px;
+            }
+
+            .buttons button:hover {
+                background-color: #2D2D2D;
+                color: #E0E0E0;
+            }
+            
+        </style>
+    </tab-group>
+
     <script src="./script.js"></script>
-  </body>
+</body>
 </html>
