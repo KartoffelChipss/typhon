@@ -1,16 +1,35 @@
 {
   "name": "typhon",
+  "productName": "Typhon",
   "version": "1.0.0",
-  "description": "A minimal Electron application",
+  "description": "A VERY nice web browser!",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "build-installer": "electron-builder"
+  },
+  "build": {
+    "appId": "typhon",
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "typhon_gradient.ico"
+    },
+    "nsis": {
+      "installerIcon": "typhon_gradient.ico",
+      "uninstallerIcon": "typhon_gradient.ico",
+      "uninstallDisplayName": "Typhon",
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
   },
   "repository": "https://github.com/KartoffelChipss/typhon",
-  "author": "GitHub",
+  "author": "Kartoffelchips#0445",
   "license": "CC0-1.0",
   "devDependencies": {
-    "electron": "^22.0.0"
+    "electron": "^22.0.0",
+    "electron-builder": "^23.6.0"
   },
   "dependencies": {
     "@cliqz/adblocker-electron": "^1.25.1",
