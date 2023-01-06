@@ -18,6 +18,13 @@
         <button class="reloadBtn" type="button" id="reloadBtn" onclick="reloadPage()"><i class="material-icons" style="padding-top: 3.5px;">refresh</i></button>
         <input class="url" id="url" type="text" placeholder="URL eingeben oder mit Google suchen" onkeydown="go()">
     </div>
+
+
+    <div class="navbuttons">
+        <button type="button" onclick="minimizeWindow()"><i class="material-icons">remove</i></button>
+        <button type="button" onclick="console.log('Tab Button clicked')"><i class="material-icons">crop_square</i></button>
+        <button type="button" id="closeBtn" onclick="closeApp()"><i class="material-icons">close</i></button>
+    </div>
     <!-- <webview id="myWebview" src="https://google.com"></webview> -->
     <tab-group new-tab-button="true" sortable="true" id="tabgroup">
         <style>
@@ -44,6 +51,9 @@
                 position: fixed;
                 z-index: 8;
                 top: 0;
+                left: 0;
+                width: calc(100% - 120px);
+                -webkit-app-region: drag;
             }
 
             .tab {
@@ -53,6 +63,8 @@
                 border-top-right-radius: 7px;
                 border: none;
                 margin: 2.5px;
+                width: 150px;
+                -webkit-app-region: no-drag;
             }
 
             .tab-title {
@@ -75,6 +87,7 @@
             .tab-close button {
                 color: #E0E0E0;
                 transition: all .2s ease-in-out;
+                -webkit-app-region: no-drag;
             }
 
             .tab-close button:hover {
@@ -90,6 +103,7 @@
                 display: flex;
                 align-items: center;
                 padding: 5px;
+                -webkit-app-region: no-drag;
             }
 
             .buttons button {
@@ -98,6 +112,7 @@
                 font-weight: 500;
                 font-size: 17px;
                 padding-bottom: 1px;
+                -webkit-app-region: no-drag;
             }
 
             .buttons button:hover {

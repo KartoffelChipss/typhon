@@ -1,4 +1,6 @@
 const TabGroup = require("electron-tabs");
+const { ipcRenderer } = require("electron/renderer");
+const ipc = require('electron').ipcRenderer;
 
 const backBtn = document.getElementById("backBtn");
 const forwardBtn = document.getElementById("forwardBtn");
@@ -52,6 +54,24 @@ tabGroup.on("tab-removed", (tab, tabGroup) => {
             iconURL: "./typhon_gradient.ico",
         });
     }
+});
+
+tabGroup.on("tab-added", (tab, tabGroup) => {
+    tab.on("webview-dom-ready", (tab) => {
+        let windowWidth = document.body.offsetWidth - 180;
+        let tabWidth = 150;
+        let tabCount = tabGroup.getTabs().length;
+
+        console.log(tabCount)
+
+        if ((tabCount * tabWidth) > windowWidth) {
+            tab.close();
+            const rightmostTab = tabGroup.getTabByPosition(-1);
+            rightmostTab.activate();
+        }
+    });
+
+    urlInput.focus();
 });
 
 tabGroup.getActiveTab().webview.addEventListener('new-window', (e) => {
@@ -182,7 +202,6 @@ function go() {
             activeTab.webview.loadURL(`https://google.com/search?q=${search}`)
         }
 
-        urlInput.blur();
         urlInput.value = activeTab.webview.getURL();
         if (activeTab.webview.canGoForward() === true) {
             forwardBtn.classList.add("enabled");
@@ -268,3 +287,38 @@ function reloadOnWNF() {
         activeTab.webview.loadURL("file://" +  __dirname + "/public/website_not_available.html");
     });
 }
+
+function closeApp() {
+    ipc.send('close');
+}
+
+function minimizeWindow() {
+    ipc.send("minimize");
+}
+
+ipc.on("newTab", () => {
+    const newTab = tabGroup.addTab({
+        title: "Neuer Tab",
+        src: "file://" +  __dirname + "/public/defaultPage.html",
+        active: true,
+        iconURL: "./typhon_gradient.ico",
+    });
+    urlInput.focus();
+});
+
+ipc.on("reloadPage", () => {
+    reloadPage();
+});
+
+ipc.on("reloadPageWithoutcache", () => {
+    let activeTab = tabGroup.getActiveTab();
+    let webviewUrl = activeTab.webview.getURL();
+    if (webviewUrl.includes("website_not_available.html") || webviewUrl.includes("defaultPage.html")) return;
+    activeTab.webview.reloadIgnoringCache();
+    urlInput.blur();
+    urlInput.value = activeTab.webview.getURL();
+});
+
+ipc.on("goToUrlbar", () => {
+    urlInput.focus();
+});

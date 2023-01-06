@@ -1,18 +1,22 @@
 // Modules to control application life and create native browser window
 const { Console } = require('console')
 const {app, BrowserWindow, Menu, MenuItem, globalShortcut, webContents} = require('electron')
-const { webFrame } = require('electron/renderer')
+const { webFrame, ipcRenderer } = require('electron/renderer')
 const path = require('path')
 const { ElectronBlocker } = require('@cliqz/adblocker-electron');
 const fetch = require('cross-fetch'); // required 'fetch'
+const { ipcMain } = require('electron/main');
 
-async function createWindow () {
+async function createWindow() {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 1400,
     height: 1000,
+    frame: false,
+    autoHideMenuBar: true,
     icon: __dirname + '/typhon_gradient.ico',
     webPreferences: {
+      preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: true,
       contextIsolation: false,
       webviewTag: true,
@@ -26,32 +30,104 @@ async function createWindow () {
 
   mainWindow.setMenu(null)
 
+  const focusedWindow = BrowserWindow.getFocusedWindow();
+
+  const menu = new Menu()
+  menu.append(new MenuItem({
+    label: 'Webseite',
+    submenu: [
+    // {
+    //   role: 'devtools',
+    //   label: "Developer Tools (Not for Users)",
+    //   accelerator: 'Alt+CommandOrControl+I',
+    //   click: () => {
+    //     mainWindow.webContents.isDevToolsOpened() ? mainWindow.webContents.closeDevTools() : mainWindow.webContents.openDevTools();
+    //   }
+    // },
+    {
+      role: 'newTab',
+      label: "Neuer Tab",
+      accelerator: 'CommandOrControl+T',
+      click: () => {
+        focusedWindow.webContents.send("newTab");
+      }
+    },
+    {
+      role: 'newWindow',
+      label: "Neues Fenster",
+      accelerator: 'CommandOrControl+N',
+      click: () => {
+        createWindow();
+      }
+    },
+    {
+      role: 'reloadPage',
+      label: "Seite neu laden",
+      accelerator: 'CommandOrControl+R',
+      click: () => {
+        focusedWindow.webContents.send("reloadPage");
+      }
+    },
+    {
+      role: 'reloadPageWithoutcache',
+      label: "Seite ohne cache neu laden",
+      accelerator: 'Shift+R',
+      click: () => {
+        focusedWindow.webContents.send("reloadPageWithoutcache");
+      }
+    },
+    {
+      role: 'goToUrlbar',
+      label: "Zur Adressleiste wechseln",
+      accelerator: 'Alt+D',
+      click: () => {
+        focusedWindow.webContents.send("goToUrlbar");
+      }
+    }]
+  }))
+  
+  Menu.setApplicationMenu(menu)
+
   // and load the index.html of the app.
   mainWindow.loadFile("index.html")
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools()
+
+  // globalShortcut.register('Alt+CommandOrControl+I', () => {
+  //   mainWindow.webContents.isDevToolsOpened() ? mainWindow.webContents.closeDevTools() : mainWindow.webContents.openDevTools();
+  // });
+
+  // globalShortcut.register('CommandOrControl+T', () => {
+  //   mainWindow.webContents.send("newTab");
+  // });
+
+  // globalShortcut.register('CommandOrControl+R', () => {
+  //   mainWindow.webContents.send("reloadPage");
+  // });
+
+  // globalShortcut.register('Shift+R', () => {
+  //   mainWindow.webContents.send("reloadPageWithoutcache");
+  // });
+
+  // globalShortcut.register('CommandOrControl+N', () => {
+  //   createWindow();
+  // })
+
+  // globalShortcut.register('Alt+D', () => {
+  //   mainWindow.webContents.send("goToUrlbar");
+  // })
+
+  ipcMain.on("minimize", () => {
+    mainWindow.isMinimized() ? mainWindow.restore() : mainWindow.minimize()
+  })
 }
-
-// const menu = new Menu()
-// menu.append(new MenuItem({
-//   label: 'Electron',
-//   submenu: [{
-//     role: 'help',
-//     accelerator: process.platform === 'darwin' ? 'Alt+Cmd+I' : 'Alt+Shift+I',
-//     click: () => { console.log('Electron rocks!') }
-//   }]
-// }))
-
-// Menu.setApplicationMenu(menu)
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-  globalShortcut.register('Alt+CommandOrControl+I', () => {
-    webFrame.openDevTools()
-  })
+
 }).then(() => {
   createWindow()
 
@@ -61,6 +137,10 @@ app.whenReady().then(() => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
 })
+
+ipcMain.on("close", () => {
+  app.quit()
+});
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
