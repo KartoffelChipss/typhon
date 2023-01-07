@@ -1,3 +1,4 @@
+const { app } = require("electron");
 const TabGroup = require("electron-tabs");
 const { ipcRenderer } = require("electron/renderer");
 const ipc = require('electron').ipcRenderer;
@@ -20,6 +21,10 @@ const firstTab = tabGroup.addTab({
     src: "file://" +  __dirname + "/public/defaultPage.html",
     active: true,
     iconURL: "./typhon_gradient.ico",
+})
+
+firstTab.once("webview-dom-ready", (tab) => {
+    ipc.send("firstTabReady");
 });
 
 tabGroup.on("tab-active", (tab, tabGroup) => {
@@ -62,16 +67,14 @@ tabGroup.on("tab-added", (tab, tabGroup) => {
         let tabWidth = 150;
         let tabCount = tabGroup.getTabs().length;
 
-        console.log(tabCount)
-
         if ((tabCount * tabWidth) > windowWidth) {
             tab.close();
             const rightmostTab = tabGroup.getTabByPosition(-1);
             rightmostTab.activate();
         }
+        
+        urlInput.focus();
     });
-
-    urlInput.focus();
 });
 
 tabGroup.getActiveTab().webview.addEventListener('new-window', (e) => {
@@ -95,6 +98,10 @@ setInterval(() => {
         urlInput.value = webviewUrl;
     }
 
+    if (urlInput !== document.activeElement && (webviewUrl.includes("website_not_available.html") || webviewUrl.includes("defaultPage.html"))) {
+        urlInput.value = "";
+    }
+
     activeTab.setTitle(activeTab.webview.getTitle())
 
     if (activeTab.webview.canGoForward()) {
@@ -108,6 +115,8 @@ setInterval(() => {
     } else {
         backBtn.classList.remove("enabled");
     }
+
+    activeTab.webview.executeJavaScript("document.querySelectorAll('a').forEach(a => {a.target = '_self'})");
 }, 1000)
 
 // https://www.electronjs.org/de/docs/latest/api/webview-tag
@@ -180,6 +189,16 @@ function isValidDomain(str) {
     }
 }
 
+async function tryHttps(urlInputValue, activeTab) {
+    let isValid = true;
+
+    activeTab.webview.loadURL("https://" + urlInputValue).catch(err => {
+        isValid = false;
+    }).then(() => {
+        return isValid;
+    })
+}
+
 function go() {
     if(event.key === 'Enter') {
         let activeTab = tabGroup.getActiveTab();
@@ -194,8 +213,16 @@ function go() {
                 activeTab.webview.loadURL("file://" +  __dirname + "/public/website_not_available.html");
             })
         } else if (isValidDomain(urlInputValue)) {
-            activeTab.webview.loadURL("https://" + urlInputValue).catch(err => {
-                activeTab.webview.loadURL("http://" + urlInputValue).catch(console.error)
+            isValid = tryHttps(urlInputValue, activeTab).then((isValid) => {
+                if (isValid === true) {
+                    activeTab.webview.loadURL("https://" + urlInputValue)
+                } else {
+                    activeTab.webview.loadURL("http://" + urlInputValue).catch(err2 => {
+                        console.log("Test")
+                        console.error;
+                        activeTab.webview.loadURL("file://" +  __dirname + "/public/website_not_available.html");
+                    });
+                }
             })
         } else {
             let search = urlInputValue.replace(/\s/g, "+");
@@ -321,4 +348,17 @@ ipc.on("reloadPageWithoutcache", () => {
 
 ipc.on("goToUrlbar", () => {
     urlInput.focus();
+});
+
+ipc.on("openWVDevTools", () => {
+    const activeWebview = tabGroup.getActiveTab().webview;
+    activeWebview.isDevToolsOpened() ? activeWebview.closeDevTools() : activeWebview.openDevTools();
+});
+
+ipc.on("goBack", () => {
+    goBack();
+});
+
+ipc.on("goForward", () => {
+    goForward();
 });

@@ -7,12 +7,35 @@ const { ElectronBlocker } = require('@cliqz/adblocker-electron');
 const fetch = require('cross-fetch'); // required 'fetch'
 const { ipcMain } = require('electron/main');
 
+var loadingwindow = null;
+
 async function createWindow() {
   // Create the browser window.
+  
+}
+
+// This method will be called when Electron has finished
+// initialization and is ready to create browser windows.
+// Some APIs can only be used after this event occurs.
+app.whenReady().then(async () => {
+  loadingwindow = new BrowserWindow({
+    width: 300,
+    height: 300,
+    frame : false,
+    movable : false,
+    resizable: false,
+    backgroundColor: "#2D2D2D",
+    icon: __dirname + '/typhon_gradient.ico',
+  })
+
+  loadingwindow.loadFile('loading.html') // To load the activity loader html file
+  loadingwindow.show();
+
   const mainWindow = new BrowserWindow({
     width: 1400,
     height: 1000,
     frame: false,
+    show: false,
     autoHideMenuBar: true,
     icon: __dirname + '/typhon_gradient.ico',
     webPreferences: {
@@ -29,8 +52,6 @@ async function createWindow() {
   blocker.enableBlockingInSession(mainWindow.webContents.session);
 
   mainWindow.setMenu(null)
-
-  const focusedWindow = BrowserWindow.getFocusedWindow();
 
   const menu = new Menu()
   menu.append(new MenuItem({
@@ -49,7 +70,7 @@ async function createWindow() {
       label: "Neuer Tab",
       accelerator: 'CommandOrControl+T',
       click: () => {
-        focusedWindow.webContents.send("newTab");
+        mainWindow.webContents.send("newTab");
       }
     },
     {
@@ -65,7 +86,7 @@ async function createWindow() {
       label: "Seite neu laden",
       accelerator: 'CommandOrControl+R',
       click: () => {
-        focusedWindow.webContents.send("reloadPage");
+        mainWindow.webContents.send("reloadPage");
       }
     },
     {
@@ -73,7 +94,23 @@ async function createWindow() {
       label: "Seite ohne cache neu laden",
       accelerator: 'Shift+R',
       click: () => {
-        focusedWindow.webContents.send("reloadPageWithoutcache");
+        mainWindow.webContents.send("reloadPageWithoutcache");
+      }
+    },
+    {
+      role: 'goBack',
+      label: "Zuück",
+      accelerator: 'CommandOrControl+Left',
+      click: () => {
+        mainWindow.webContents.send("goBack");
+      }
+    },
+    {
+      role: 'goForward',
+      label: "Weiter",
+      accelerator: 'CommandOrControl+Right',
+      click: () => {
+        mainWindow.webContents.send("goForward");
       }
     },
     {
@@ -81,7 +118,15 @@ async function createWindow() {
       label: "Zur Adressleiste wechseln",
       accelerator: 'Alt+D',
       click: () => {
-        focusedWindow.webContents.send("goToUrlbar");
+        mainWindow.webContents.send("goToUrlbar");
+      }
+    },
+    {
+      role: 'openDevTools',
+      label: "DevTools öffnen",
+      accelerator: 'CommandOrControl+Alt+D',
+      click: () => {
+        mainWindow.webContents.send("openWVDevTools");
       }
     }]
   }))
@@ -94,42 +139,15 @@ async function createWindow() {
   // Open the DevTools.
   mainWindow.webContents.openDevTools()
 
-  // globalShortcut.register('Alt+CommandOrControl+I', () => {
-  //   mainWindow.webContents.isDevToolsOpened() ? mainWindow.webContents.closeDevTools() : mainWindow.webContents.openDevTools();
-  // });
-
-  // globalShortcut.register('CommandOrControl+T', () => {
-  //   mainWindow.webContents.send("newTab");
-  // });
-
-  // globalShortcut.register('CommandOrControl+R', () => {
-  //   mainWindow.webContents.send("reloadPage");
-  // });
-
-  // globalShortcut.register('Shift+R', () => {
-  //   mainWindow.webContents.send("reloadPageWithoutcache");
-  // });
-
-  // globalShortcut.register('CommandOrControl+N', () => {
-  //   createWindow();
-  // })
-
-  // globalShortcut.register('Alt+D', () => {
-  //   mainWindow.webContents.send("goToUrlbar");
-  // })
-
   ipcMain.on("minimize", () => {
     mainWindow.isMinimized() ? mainWindow.restore() : mainWindow.minimize()
   })
-}
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.whenReady().then(() => {
-
-}).then(() => {
-  createWindow()
+  ipcMain.once("firstTabReady", () => {
+    console.log("first tab ready recieved");
+    mainWindow.show();
+    loadingwindow.hide();
+  })
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
