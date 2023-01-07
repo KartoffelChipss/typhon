@@ -19,6 +19,11 @@
         <input class="url" id="url" type="text" placeholder="URL eingeben oder mit Google suchen" onkeydown="go()">
     </div>
 
+    <div id="modalbox">
+        <input type="text" onchange="searchPage(this)" placeholder="Suchbegriff eingeben">
+        <button><i class="material-icons" onclick="document.getElementById('modalbox').style.display = 'none'">close</i></button>
+    </div>
+
 
     <div class="navbuttons">
         <button type="button" onclick="minimizeWindow()"><i class="material-icons">remove</i></button>

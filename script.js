@@ -362,3 +362,19 @@ ipc.on("goBack", () => {
 ipc.on("goForward", () => {
     goForward();
 });
+
+ipc.on('find_request', () => {
+    const modalbox = document.getElementById('modalbox');
+
+    if (modalbox.style.display === 'flex') {
+        modalbox.style.display = 'none';
+    } else {
+        modalbox.style.display = 'flex';
+    }
+    modalbox.querySelectorAll("input")[0].focus();
+});
+
+function searchPage(searchInput) {
+    let activeTab = tabGroup.getActiveTab();
+    activeTab.webview.findInPage(searchInput);
+}

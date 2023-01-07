@@ -7,6 +7,15 @@
 
 i.material-icons{font-family:'Material Icons';font-weight:400;font-style:normal;font-size:24px;line-height:1;letter-spacing:normal;text-transform:none;display:inline-block;word-wrap:normal;-moz-font-feature-settings:'liga';font-feature-settings:'liga';-webkit-font-feature-settings:'liga';-webkit-font-smoothing:antialiased}
 
+@keyframes grow {
+    from {
+        transform: scale(0);
+    }
+    to {
+        transform: scale(1);
+    }
+}
+
 body {
     padding: 0;
     margin: 0;
@@ -122,6 +131,46 @@ body {
 
 #closeBtn:hover {
     background-color: red;
+}
+
+#modalbox {
+    display: none;
+    position: fixed;
+    align-items: center;
+    right: 50px;
+    top: 100px;
+    z-index: 100;
+    width: 250px;
+    background-color: #2D2D2D;
+    padding: 15px;
+    border-radius: 7px;
+    animation: grow 0.15s ease;
+}
+
+#modalbox input {
+    border: none;
+    padding: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #E0E0E0;
+    border-radius: 3px;
+    background-color: #3F3F3F;
+    width: max-content;
+    flex-grow: 1;
+    border: #2D2D2D solid 2px;
+}
+
+#modalbox input:focus {
+    outline: none;
+    border: #40e0d0 solid 2px;
+}
+
+#modalbox button {
+    margin: 0;
+    margin-left: 5px;
+    border: none;
+    background-color: transparent;
+    color: #E0E0E0;
 }
 
 webview {

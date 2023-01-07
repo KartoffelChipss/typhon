@@ -122,6 +122,14 @@ app.whenReady().then(async () => {
       }
     },
     {
+      role: 'searchOnPage',
+      label: "Auf dieser Seite suchen",
+      accelerator: 'CommandOrControl+F',
+      click: () => {
+        mainWindow.webContents.send('find_request', '');
+      }
+    },
+    {
       role: 'openDevTools',
       label: "DevTools öffnen",
       accelerator: 'CommandOrControl+Alt+D',
@@ -148,6 +156,12 @@ app.whenReady().then(async () => {
     mainWindow.show();
     loadingwindow.hide();
   })
+  
+  mainWindow.webContents.on('found-in-page', (event, result) => {
+    if (result.finalUpdate) {
+      mainWindow.webContents.stopFindInPage('keepSelection');
+    }
+  });
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
