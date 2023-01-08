@@ -382,3 +382,8 @@ function searchPage(searchInput) {
     let activeTab = tabGroup.getActiveTab();
     activeTab.webview.findInPage(searchInput);
 }
+
+ipc.on("inspectelement", (e) => {
+    console.log("Inspect element")
+    console.log(e)
+});

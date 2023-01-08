@@ -8,16 +8,13 @@ const fetch = require('cross-fetch'); // required 'fetch'
 const { ipcMain } = require('electron/main');
 
 var loadingwindow = null;
-
-async function createWindow() {
-  // Create the browser window.
-  
-}
+let rightClickPosition = null;
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(async () => {
+
   loadingwindow = new BrowserWindow({
     width: 300,
     height: 300,
@@ -32,8 +29,8 @@ app.whenReady().then(async () => {
   loadingwindow.show();
 
   const mainWindow = new BrowserWindow({
-    width: 1400,
-    height: 1000,
+    width: 1100,
+    height: 800,
     frame: false,
     show: false,
     autoHideMenuBar: true,
@@ -141,7 +138,22 @@ app.whenReady().then(async () => {
   
   Menu.setApplicationMenu(menu)
 
-  // and load the index.html of the app.
+  // Rightclickmenu
+  const rightClickMenu = new Menu();
+  const rightClickMenuItem = new MenuItem({
+    label: "Untersuchen",
+    click: () => {
+      mainWindow.webContents.send("inspectelement");
+    }
+  });
+  rightClickMenu.append(rightClickMenuItem);
+
+  ipcMain.on("show-context-menu", (e) => {
+    rightClickMenu.popup(BrowserWindow.fromWebContents(e.sender));
+  })
+
+
+
   mainWindow.loadFile("index.html")
 
   // Open the DevTools.
@@ -149,7 +161,7 @@ app.whenReady().then(async () => {
 
   ipcMain.on("minimize", () => {
     mainWindow.isMinimized() ? mainWindow.restore() : mainWindow.minimize();
-  })
+  });
 
   ipcMain.on("maximize", () => {
     mainWindow.isMaximized() ? mainWindow.unmaximize() : mainWindow.maximize();
@@ -159,7 +171,7 @@ app.whenReady().then(async () => {
     console.log("App ready");
     mainWindow.show();
     loadingwindow.hide();
-  })
+  });
   
   mainWindow.webContents.on('found-in-page', (event, result) => {
     if (result.finalUpdate) {
@@ -167,11 +179,11 @@ app.whenReady().then(async () => {
     }
   });
 
-  app.on('activate', function () {
-    // On macOS it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
-  })
+  // app.on('activate', function () {
+  //   // On macOS it's common to re-create a window in the app when the
+  //   // dock icon is clicked and there are no other windows open.
+  //   if (BrowserWindow.getAllWindows().length === 0) createWindow()
+  // })
 })
 
 ipcMain.on("close", () => {
@@ -183,7 +195,4 @@ ipcMain.on("close", () => {
 // explicitly with Cmd + Q.
 app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') app.quit()
-})
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
+});

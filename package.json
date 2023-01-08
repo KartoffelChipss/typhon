@@ -20,6 +20,7 @@
       "installerIcon": "typhon_gradient_max.ico",
       "uninstallerIcon": "typhon_gradient_max.ico",
       "uninstallDisplayName": "Typhon",
+      "licence": "LICENCE",
       "oneClick": false,
       "allowToChangeInstallationDirectory": true
     }
