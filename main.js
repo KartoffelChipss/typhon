@@ -165,7 +165,9 @@ app.whenReady().then(async () => {
       label: "Alle gespeicherten Daten löschen",
       accelerator: 'CommandOrControl+Shift+Alt+Delete',
       click: () => {
-        mainWindow.webContents.send("openWVDevTools");
+        store.delete("lastBounds");
+        store.delete("lastTabs");
+        console.log("Deleted Data");
       }
     }]
   }))
@@ -202,20 +204,20 @@ app.whenReady().then(async () => {
   const previouslyOpenTabs = store.get("lastTabs");
 
   mainWindow.once("ready-to-show", () => {
-    if (previouslyOpenTabs.length <= 0) {
+    if (!previouslyOpenTabs || previouslyOpenTabs.length <= 0) {
       console.log("No previous tabs found!")
       mainWindow.webContents.send("noPreviousTabs");
+    } else {
+      previouslyOpenTabs.forEach(tab => {
+        mainWindow.webContents.send("openTab", tab);
+      })
     }
-
-    previouslyOpenTabs.forEach(tab => {
-      mainWindow.webContents.send("openTab", tab);
-    })
   })
 
   ipcMain.on("activeTabReady", () => {
     console.log("App ready");
     mainWindow.show();
-    if (pastBounds.maximized === true) {
+    if (pastBounds && pastBounds.maximized === true) {
       mainWindow.maximize();
     }
     loadingwindow.hide();
