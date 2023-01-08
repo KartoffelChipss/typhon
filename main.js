@@ -1,14 +1,17 @@
 // Modules to control application life and create native browser window
 const { Console } = require('console')
-const {app, BrowserWindow, Menu, MenuItem, globalShortcut, webContents} = require('electron')
+const {app, BrowserWindow, Menu, MenuItem, globalShortcut, webContents, screen} = require('electron')
 const { webFrame, ipcRenderer } = require('electron/renderer')
 const path = require('path')
 const { ElectronBlocker } = require('@cliqz/adblocker-electron');
 const fetch = require('cross-fetch'); // required 'fetch'
 const { ipcMain } = require('electron/main');
+const Store = require('electron-store');
 
 var loadingwindow = null;
 let rightClickPosition = null;
+
+const store = new Store();
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -28,9 +31,32 @@ app.whenReady().then(async () => {
   loadingwindow.loadFile('loading.html') // To load the activity loader html file
   loadingwindow.show();
 
+  const screenHeight = screen.getPrimaryDisplay().workAreaSize.height;
+  const screenWidth = screen.getPrimaryDisplay().workAreaSize.width;
+
+  let bounds = {};
+  let pastBounds = store.get("lastBounds");
+  if (pastBounds) {
+    bounds = {
+      height: pastBounds.height,
+      width: pastBounds.width,
+      y: pastBounds.y,
+      x: pastBounds.x,
+    }
+  } else {
+    bounds = {
+      height: Math.floor(screenHeight * 0.8),
+      width: Math.floor(screenWidth * 0.6),
+      y: (screenHeight / 2) - (Math.floor(screenHeight * 0.8) / 2),
+      x: (screenWidth / 2) - (Math.floor(screenWidth * 0.6) / 2),
+    }
+  }
+
   const mainWindow = new BrowserWindow({
-    width: 1100,
-    height: 800,
+    width: bounds.width,
+    height: bounds.height,
+    y: bounds.y,
+    x: bounds.x,
     frame: false,
     show: false,
     autoHideMenuBar: true,
@@ -133,6 +159,14 @@ app.whenReady().then(async () => {
       click: () => {
         mainWindow.webContents.send("openWVDevTools");
       }
+    },
+    {
+      role: 'deleteStorage',
+      label: "Alle gespeicherten Daten löschen",
+      accelerator: 'CommandOrControl+Shift+Alt+Delete',
+      click: () => {
+        mainWindow.webContents.send("openWVDevTools");
+      }
     }]
   }))
   
@@ -152,8 +186,6 @@ app.whenReady().then(async () => {
     rightClickMenu.popup(BrowserWindow.fromWebContents(e.sender));
   })
 
-
-
   mainWindow.loadFile("index.html")
 
   // Open the DevTools.
@@ -167,10 +199,27 @@ app.whenReady().then(async () => {
     mainWindow.isMaximized() ? mainWindow.unmaximize() : mainWindow.maximize();
   });
 
-  ipcMain.once("firstTabReady", () => {
+  const previouslyOpenTabs = store.get("lastTabs");
+
+  mainWindow.once("ready-to-show", () => {
+    if (previouslyOpenTabs.length <= 0) {
+      console.log("No previous tabs found!")
+      mainWindow.webContents.send("noPreviousTabs");
+    }
+
+    previouslyOpenTabs.forEach(tab => {
+      mainWindow.webContents.send("openTab", tab);
+    })
+  })
+
+  ipcMain.on("activeTabReady", () => {
     console.log("App ready");
     mainWindow.show();
+    if (pastBounds.maximized === true) {
+      mainWindow.maximize();
+    }
     loadingwindow.hide();
+    store.set("lastTabs", []);
   });
   
   mainWindow.webContents.on('found-in-page', (event, result) => {
@@ -184,10 +233,30 @@ app.whenReady().then(async () => {
   //   // dock icon is clicked and there are no other windows open.
   //   if (BrowserWindow.getAllWindows().length === 0) createWindow()
   // })
+  ipcMain.on("close", (e, tabs) => {
+    store.set("lastTabs", tabs)
+  
+    if (mainWindow.isMaximized()) {
+      let lastbounds = {
+        maximized: true,
+        height: Math.floor(screenHeight * 0.8),
+        width: Math.floor(screenWidth * 0.6),
+        y: (screenHeight / 2) - (Math.floor(screenHeight * 0.8) / 2),
+        x: (screenWidth / 2) - (Math.floor(screenWidth * 0.6) / 2),
+      }
+      store.set("lastBounds", lastbounds);
+    } else {
+      store.set("lastBounds", mainWindow.getBounds());
+      store.set("lastBounds.maximized", false)
+    }
+  
+    app.quit()
+  });
 })
 
-ipcMain.on("close", () => {
-  app.quit()
+
+ipcMain.on("consoleLog", (e, msg) => {
+  console.log(msg);
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common

@@ -16,15 +16,17 @@ tabGroup.setDefaultTab({
     iconURL: "./assets/typhon_gradient.ico",
 });
 
-const firstTab = tabGroup.addTab({
-    title: "Neuer Tab",
-    src: "file://" +  __dirname + "/public/defaultPage.html",
-    active: true,
-    iconURL: "./assets/typhon_gradient.ico",
-})
+ipc.once("noPreviousTabs", () => {
+    const firstTab = tabGroup.addTab({
+        title: "Neuer Tab",
+        src: "file://" +  __dirname + "/public/defaultPage.html",
+        active: true,
+        iconURL: "./assets/typhon_gradient.ico",
+    });
 
-firstTab.once("webview-dom-ready", (tab) => {
-    ipc.send("firstTabReady");
+    firstTab.once("webview-dom-ready", (tab) => {
+        ipc.send("activeTabReady")
+    });
 });
 
 tabGroup.on("tab-active", (tab, tabGroup) => {
@@ -40,7 +42,7 @@ tabGroup.on("tab-active", (tab, tabGroup) => {
             forwardBtn.classList.remove("enabled");
         }
     
-        if (webView.canGoBack() === true) {
+        if (tab.webview.canGoBack() === true) {
             backBtn.classList.add("enabled");
         } else {
             backBtn.classList.remove("enabled");
@@ -77,18 +79,21 @@ tabGroup.on("tab-added", (tab, tabGroup) => {
     });
 });
 
-tabGroup.getActiveTab().webview.addEventListener('new-window', (e) => {
-    console.log("test")
-    const protocol = require('url').parse(e.url).protocol
-    if (protocol === 'http:' || protocol === 'https:') {
-        tabGroup.addTab({
-            title: "Neuer Tab",
-            src: e.url,
-            active: true,
-            iconURL: "./assets/typhon_gradient.ico",
-        });
-    }
-})
+let activeTab = tabGroup.getActiveTab();
+if (activeTab) {
+    activeTab.webview.addEventListener('new-window', (e) => {
+        console.log("test")
+        const protocol = require('url').parse(e.url).protocol
+        if (protocol === 'http:' || protocol === 'https:') {
+            tabGroup.addTab({
+                title: "Neuer Tab",
+                src: e.url,
+                active: true,
+                iconURL: "./assets/typhon_gradient.ico",
+            });
+        }
+    })
+}
 
 setInterval(() => {
     let activeTab = tabGroup.getActiveTab();
@@ -98,7 +103,7 @@ setInterval(() => {
         urlInput.value = webviewUrl;
     }
 
-    if (urlInput !== document.activeElement && (webviewUrl.includes("website_not_available.html") || webviewUrl.includes("defaultPage.html"))) {
+    if (urlInput !== document.activeElement && (urlInput.value.includes("website_not_available.html") || urlInput.value.includes("defaultPage.html"))) {
         urlInput.value = "";
     }
 
@@ -117,6 +122,7 @@ setInterval(() => {
     }
 
     activeTab.webview.executeJavaScript("document.querySelectorAll('a').forEach(a => {a.target = '_self'})");
+
 }, 1000)
 
 // https://www.electronjs.org/de/docs/latest/api/webview-tag
@@ -316,7 +322,23 @@ function reloadOnWNF() {
 }
 
 function closeApp() {
-    ipc.send('close');
+    let allTabs = tabGroup.getTabs();
+
+    let tabs = [];
+    allTabs.forEach(tabb => {
+        let tabURl = tabb.webview.getURL();
+        
+        
+        if (tabb.id === tabGroup.getActiveTab().id) {
+            tabs.push({url: tabURl, title: tabb.title, active: true});
+        } else {
+            tabs.push({url: tabURl, title: tabb.title, active: false});
+        }
+
+    })
+
+    console.log(tabs)
+    ipc.send('close', tabs);
 }
 
 function minimizeWindow() {
@@ -386,4 +408,28 @@ function searchPage(searchInput) {
 ipc.on("inspectelement", (e) => {
     console.log("Inspect element")
     console.log(e)
+});
+
+ipc.on("openTab", (e, tab) => {
+    let tabURL;
+    if (!tab.url || !tab.url.trim() || tab.url.includes("/typhon/undefined") || tab.url === "") {
+        tabURL = "file:///C:/Users/janst/development-local/GITHub-Desktop/typhon/public/defaultPage.html";
+    } else {
+        tabURL = tab.url
+    }
+
+    ipc.send("consoleLog", tabURL)
+
+    let newTab = tabGroup.addTab({
+        title: tab.title,
+        src: tabURL,
+        iconURL: "./assets/typhon_gradient.ico",
+    })
+    
+    if (tab.active === true) {
+        newTab.activate();
+        newTab.on("webview-dom-ready", (tab) => {
+            ipc.send("activeTabReady");
+        });
+    }
 });

@@ -14,13 +14,13 @@
       "target": [
         "nsis"
       ],
-      "icon": "typhon_gradient_max.ico"
+      "icon": "assets/typhon_gradient_max.ico"
     },
     "nsis": {
-      "installerIcon": "typhon_gradient_max.ico",
-      "uninstallerIcon": "typhon_gradient_max.ico",
+      "installerIcon": "assets/typhon_gradient_max.ico",
+      "uninstallerIcon": "assets/typhon_gradient_max.ico",
       "uninstallDisplayName": "Typhon",
-      "licence": "LICENCE",
+      "license": "LICENSE",
       "oneClick": false,
       "allowToChangeInstallationDirectory": true
     }
@@ -35,6 +35,7 @@
   "dependencies": {
     "@cliqz/adblocker-electron": "^1.25.1",
     "cross-fetch": "^3.1.5",
+    "electron-store": "^8.1.0",
     "electron-tabs": "^1.0.1"
   }
 }
