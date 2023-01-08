@@ -75,6 +75,7 @@ tabGroup.on("tab-added", (tab, tabGroup) => {
             rightmostTab.activate();
         }
         
+        urlInput.value = "";
         urlInput.focus();
     });
 });

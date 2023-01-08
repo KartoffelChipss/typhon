@@ -14,11 +14,11 @@
       "target": [
         "nsis"
       ],
-      "icon": "assets/typhon_gradient_max.ico"
+      "icon": "assets/typhon_gradient.ico"
     },
     "nsis": {
-      "installerIcon": "assets/typhon_gradient_max.ico",
-      "uninstallerIcon": "assets/typhon_gradient_max.ico",
+      "installerIcon": "assets/typhon_gradient.ico",
+      "uninstallerIcon": "assets/typhon_gradient.ico",
       "uninstallDisplayName": "Typhon",
       "license": "LICENSE",
       "oneClick": false,

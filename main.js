@@ -191,7 +191,7 @@ app.whenReady().then(async () => {
   mainWindow.loadFile("index.html")
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools()
+  //mainWindow.webContents.openDevTools()
 
   ipcMain.on("minimize", () => {
     mainWindow.isMinimized() ? mainWindow.restore() : mainWindow.minimize();
