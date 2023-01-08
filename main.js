@@ -25,7 +25,7 @@ app.whenReady().then(async () => {
     movable : false,
     resizable: false,
     backgroundColor: "#2D2D2D",
-    icon: __dirname + '/typhon_gradient.ico',
+    icon: __dirname + '/assets/typhon_gradient_max.ico',
   })
 
   loadingwindow.loadFile('loading.html') // To load the activity loader html file
@@ -37,7 +37,7 @@ app.whenReady().then(async () => {
     frame: false,
     show: false,
     autoHideMenuBar: true,
-    icon: __dirname + '/typhon_gradient.ico',
+    icon: __dirname + '/assets/typhon_gradient_max.ico',
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: true,
@@ -148,11 +148,15 @@ app.whenReady().then(async () => {
   mainWindow.webContents.openDevTools()
 
   ipcMain.on("minimize", () => {
-    mainWindow.isMinimized() ? mainWindow.restore() : mainWindow.minimize()
+    mainWindow.isMinimized() ? mainWindow.restore() : mainWindow.minimize();
   })
 
+  ipcMain.on("maximize", () => {
+    mainWindow.isMaximized() ? mainWindow.unmaximize() : mainWindow.maximize();
+  });
+
   ipcMain.once("firstTabReady", () => {
-    console.log("first tab ready recieved");
+    console.log("App ready");
     mainWindow.show();
     loadingwindow.hide();
   })

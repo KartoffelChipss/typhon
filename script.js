@@ -13,14 +13,14 @@ tabGroup.setDefaultTab({
     title: "Neuer Tab",
     src: "file://" +  __dirname + "/public/defaultPage.html",
     active: true,
-    iconURL: "./typhon_gradient.ico",
+    iconURL: "./assets/typhon_gradient.ico",
 });
 
 const firstTab = tabGroup.addTab({
     title: "Neuer Tab",
     src: "file://" +  __dirname + "/public/defaultPage.html",
     active: true,
-    iconURL: "./typhon_gradient.ico",
+    iconURL: "./assets/typhon_gradient.ico",
 })
 
 firstTab.once("webview-dom-ready", (tab) => {
@@ -56,7 +56,7 @@ tabGroup.on("tab-removed", (tab, tabGroup) => {
             title: "Neuer Tab",
             src: "file://" +  __dirname + "/public/defaultPage.html",
             active: true,
-            iconURL: "./typhon_gradient.ico",
+            iconURL: "./assets/typhon_gradient.ico",
         });
     }
 });
@@ -85,7 +85,7 @@ tabGroup.getActiveTab().webview.addEventListener('new-window', (e) => {
             title: "Neuer Tab",
             src: e.url,
             active: true,
-            iconURL: "./typhon_gradient.ico",
+            iconURL: "./assets/typhon_gradient.ico",
         });
     }
 })
@@ -323,12 +323,16 @@ function minimizeWindow() {
     ipc.send("minimize");
 }
 
+function maximizeWindow() {
+    ipc.send("maximize");
+}
+
 ipc.on("newTab", () => {
     const newTab = tabGroup.addTab({
         title: "Neuer Tab",
         src: "file://" +  __dirname + "/public/defaultPage.html",
         active: true,
-        iconURL: "./typhon_gradient.ico",
+        iconURL: "./assets/typhon_gradient.ico",
     });
     urlInput.focus();
 });
