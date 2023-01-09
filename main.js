@@ -1,12 +1,13 @@
 // Modules to control application life and create native browser window
 const { Console } = require('console')
-const {app, BrowserWindow, Menu, MenuItem, globalShortcut, webContents, screen} = require('electron')
+const {app, BrowserWindow, Menu, MenuItem, globalShortcut, webContents, screen, clipboard} = require('electron')
 const { webFrame, ipcRenderer } = require('electron/renderer')
 const path = require('path')
 const { ElectronBlocker } = require('@cliqz/adblocker-electron');
 const fetch = require('cross-fetch'); // required 'fetch'
 const { ipcMain } = require('electron/main');
 const Store = require('electron-store');
+const contextMenu = require('electron-context-menu');
 
 var loadingwindow = null;
 let rightClickPosition = null;
@@ -254,6 +255,250 @@ app.whenReady().then(async () => {
   
     app.quit()
   });
+
+  mainWindow.webContents.on('did-finish-load', () => {
+    contextMenu({
+      window: mainWindow,
+      labels: {
+        selectAll: 'Alles auswählen',
+        cut: 'Ausschneiden',
+        copy: 'Kopieren',
+        paste: 'Einfügen',
+        save: 'Bild speichern',
+        saveImageAs: 'Bild speichern unter…',
+        copyImageAddress: 'Bildadresse kopieren',
+        copyLink: 'Link kopieren',
+        saveLinkAs: 'Link speichern unter…',
+        inspect: 'Element untersuchen'
+      },
+      prepend: (defaultActions, params, mainWindow) => [
+        {
+          label: 'Neuer Tab',
+          accelerator: 'CommandOrControl+T',
+          click: () => {
+            newTab();
+          }
+        },
+        {
+          label: "Link in neuem tab öffnen",
+          visible: params.linkURL.length > 0,
+          click: () => {
+            linkInNewTab(params.linkURL);
+          }
+        },
+        {
+          label: 'Zurück',
+          accelerator: 'CommandOrControl+Left',
+          click: () => {
+            goBack();
+          }
+        },
+        {
+          label: 'Weiter',
+          accelerator: 'CommandOrControl+Right',
+          click: () => {
+            goForward();
+          }
+        },
+        {
+          label: 'Neu laden',
+          accelerator: 'CommandOrControl+R',
+          click: () => {
+            reloadPage();
+          }
+        },
+        {
+          type: 'separator',
+        },
+        {
+          label: 'Kopieren',
+          accelerator: 'CommandOrControl+C',
+          visible: params.selectionText.trim().length > 0,
+          click: () => {
+            clipboard.writeText(params.selectionText);
+          }
+        },
+        {
+          label: 'Ausschneiden',
+          accelerator: 'CommandOrControl+X',
+          visible: params.selectionText.trim().length > 0 && params.isEditable,
+          click: () => {
+            clipboard.writeText(params.selectionText);
+            params.selectionText = "";
+          }
+        }
+      ],
+      append: (defaultActions, params, mainWindow) => [],
+      showCopyImageAddress: true,
+      showSaveImageAs: true,
+      showInspectElement: false,
+      showSaveLinkAs: false,
+      showCopyImage: false,
+      cut: false,
+      copy: false,
+      paste: true,
+      save: true,
+      saveImageAs: true,
+      copyLink: true,
+      saveLinkAs: true,
+      inspect: true,
+      showSearchWithGoogle: false,
+      showLearnSpelling: false,
+      showLookUpSelection: false,
+      showSelectAll: true,
+      showCopyLink: true,
+    });
+  });
+
+  app.on("web-contents-created", (e, contents) => { 
+    if (contents.getType() == "webview") {
+        // set context menu in webview contextMenu({ window: contents, });
+        contextMenu({
+          window: contents,
+          labels: {
+            selectAll: 'Alles auswählen',
+            copy: "Kopieren",
+            cut: 'Ausschneiden',
+            paste: 'Einfügen',
+            save: 'Bild speichern',
+            saveImageAs: 'Bild speichern unter…',
+            copyImageAddress: 'Bildadresse kopieren',
+            copyLink: 'Link kopieren',
+            saveLinkAs: 'Link speichern unter…',
+            inspect: 'Element untersuchen',
+          },
+          prepend: (defaultActions, params, mainWindow) => [
+            {
+              label: 'Neuer Tab',
+              accelerator: 'CommandOrControl+T',
+              click: () => {
+                newTab();
+              }
+            },
+            {
+              label: "Link in neuem tab öffnen",
+              visible: params.linkURL.length > 0,
+              click: () => {
+                linkInNewTab(params.linkURL);
+              }
+            },
+            {
+              label: 'Zurück',
+              accelerator: 'CommandOrControl+Left',
+              click: () => {
+                goBack();
+              }
+            },
+            {
+              label: 'Weiter',
+              accelerator: 'CommandOrControl+Right',
+              click: () => {
+                goForward();
+              }
+            },
+            {
+              label: 'Neu laden',
+              accelerator: 'CommandOrControl+R',
+              click: () => {
+                reloadPage();
+              }
+            },
+            {
+              type: 'separator',
+            },
+            {
+              label: 'Kopieren',
+              accelerator: 'CommandOrControl+C',
+              visible: params.selectionText.trim().length > 0,
+              click: () => {
+                clipboard.writeText(params.selectionText);
+              }
+            },
+            {
+              label: 'Ausschneiden',
+              accelerator: 'CommandOrControl+X',
+              visible: params.selectionText.trim().length > 0 && params.isEditable,
+              click: () => {
+                clipboard.writeText(params.selectionText);
+                params.selectionText = "";
+              }
+            }
+          ],
+          append: (defaultActions, params, mainWindow) => [
+            {
+              label: 'Element untersuchen',
+              accelerator: "CommandOrControl+Alt+D",
+              visible: params.selectionText.trim().length <= 0 && params.mediaType !== 'image',
+              click: () => {
+                openDevTools();
+              }
+            },
+            {
+              label: 'Element untersuchen',
+              accelerator: "CommandOrControl+Alt+D",
+              visible: params.selectionText.trim().length > 0,
+              click: () => {
+                inspecElement(params.x, params.y)
+              }
+            },
+            {
+              label: 'Element untersuchen',
+              accelerator: "CommandOrControl+Alt+D",
+              visible: params.mediaType === "image",
+              click: () => {
+                inspecElement(params.x, params.y)
+              }
+            }
+          ],
+          showCopyImageAddress: true,
+          showSaveImageAs: true,
+          showInspectElement: false,
+          showSaveLinkAs: false,
+          showCopyImage: false,
+          cut: false,
+          copy: false,
+          paste: true,
+          save: true,
+          saveImageAs: true,
+          copyLink: true,
+          saveLinkAs: true,
+          inspect: true,
+          showSearchWithGoogle: false,
+          showLearnSpelling: false,
+          showLookUpSelection: false,
+          showSelectAll: true,
+          showCopyLink: true,
+        });
+    }
+  });
+
+  function newTab() {
+    mainWindow.webContents.send("newTab");
+  }
+
+  function goBack() {
+    mainWindow.webContents.send("goBack");
+  }
+
+  function goForward() {
+    mainWindow.webContents.send("goForward");
+  }
+
+  function reloadPage() {
+    mainWindow.webContents.send("reloadPage");
+  }
+
+  function linkInNewTab(clickedLink) {
+    mainWindow.webContents.send("linkInNewTab", clickedLink)
+  }
+
+  function openDevTools() {
+    mainWindow.webContents.send("openWVDevTools");
+  }
+
+  function inspecElement(x, y) {
+    mainWindow.webContents.send("inspectElement", x, y);
+  }
 })
 
 

@@ -76,7 +76,7 @@ tabGroup.on("tab-added", (tab, tabGroup) => {
         }
         
         urlInput.value = "";
-        urlInput.focus();
+        urlInput.focus();   
     });
 });
 
@@ -433,4 +433,20 @@ ipc.on("openTab", (e, tab) => {
             ipc.send("activeTabReady");
         });
     }
+});
+
+ipc.on("linkInNewTab", (e, openLink) => {
+    const newTab = tabGroup.addTab({
+        title: "Neuer Tab",
+        src: openLink,
+        active: true,
+        iconURL: "./assets/typhon_gradient.ico",
+    });
+});
+
+ipc.on("inspectElement", (e, x, y) => {
+    console.log(x)
+    console.log(y)
+    let activeTab = tabGroup.getActiveTab();
+    activeTab.webview.inspectElement(x, y);
 });
