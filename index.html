@@ -12,11 +12,34 @@
 <body>
     <div class="tab-bg"></div>
 
+    <div class="banner" id="banner">
+        <h3>Message</h3>
+    </div>
+
+    <div class="settingsOuter" id="settingsOuter">
+        <div class="settings">
+            <button class="closeBtn" type="button" onclick="toggleSettings()"><i class="material-icons" style="padding-top: 3px;">close</i></button>
+
+            <h1>Einstellungen</h1>
+            <div>
+                <div id="coll-data" style="margin-top: 30px; margin-bottom: 30px;">
+                    <h2 class="settings-collapsible collapsible"><button class="material-icons md-menu collapsible-icon">expand_more</button> Gespeicherte Daten</h2>
+                    <div class="settings-content">
+                        <button type="button" onclick="delData('pos')">Letzte Fensterposition löschen</button>
+                        <button type="button" onclick="delData('lastTabs')">Zuletzt geöffnete Tabs löschen</button>
+                        <button type="button" onclick="delData('all')">Alle Daten löschen</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="top">
         <button class="moveBtn" type="button" id="backBtn" style="margin-left: 5px;" onclick="goBack()"><i class="material-icons" style="padding-top: 3.5px; padding-right: 1px; padding-left: -1px;">chevron_left</i></button>
         <button class="moveBtn" type="button" id="forwardBtn" onclick="goForward()"><i class="material-icons" style="padding-top: 3.5px; padding-left: 1px; padding-right: -1px;">chevron_right</i></button>
         <button class="reloadBtn" type="button" id="reloadBtn" onclick="reloadPage()"><i class="material-icons" style="padding-top: 3.5px;">refresh</i></button>
         <input class="url" id="url" type="text" placeholder="URL eingeben oder mit Google suchen" onkeydown="go()">
+        <button class="settingsBtn" id="settingsBtn" onclick="toggleSettings()"><i class="material-icons" style="padding-top: 3.5px;">settings</i></button>
     </div>
 
     <div id="modalbox">

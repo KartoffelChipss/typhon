@@ -192,7 +192,7 @@ app.whenReady().then(async () => {
   mainWindow.loadFile("index.html")
 
   // Open the DevTools.
-  //mainWindow.webContents.openDevTools()
+  mainWindow.webContents.openDevTools()
 
   ipcMain.on("minimize", () => {
     mainWindow.isMinimized() ? mainWindow.restore() : mainWindow.minimize();
@@ -200,6 +200,23 @@ app.whenReady().then(async () => {
 
   ipcMain.on("maximize", () => {
     mainWindow.isMaximized() ? mainWindow.unmaximize() : mainWindow.maximize();
+  });
+
+  ipcMain.on("delData", (e, dataType) => {
+    if (dataType === "pos") {
+      store.delete("lastBounds");
+    }
+
+    if (dataType === "lastTabs") {
+      store.delete("lastTabs");
+    }
+
+    if (dataType === "all") {
+      store.delete("lastBounds");
+      store.delete("lastTabs");
+    }
+
+    mainWindow.webContents.send("delDataConfirm");
   });
 
   const previouslyOpenTabs = store.get("lastTabs");
@@ -425,26 +442,25 @@ app.whenReady().then(async () => {
             }
           ],
           append: (defaultActions, params, mainWindow) => [
+            // {
+            //   label: 'Element untersuchen',
+            //   accelerator: "CommandOrControl+Alt+D",
+            //   visible: params.selectionText.trim().length <= 0 && params.mediaType !== 'image',
+            //   click: () => {
+            //     openDevTools();
+            //   }
+            // },
+            // {
+            //   label: 'Element untersuchen',
+            //   accelerator: "CommandOrControl+Alt+D",
+            //   visible: params.selectionText.trim().length > 0,
+            //   click: () => {
+            //     inspecElement(params.x, params.y)
+            //   }
+            // },
             {
               label: 'Element untersuchen',
               accelerator: "CommandOrControl+Alt+D",
-              visible: params.selectionText.trim().length <= 0 && params.mediaType !== 'image',
-              click: () => {
-                openDevTools();
-              }
-            },
-            {
-              label: 'Element untersuchen',
-              accelerator: "CommandOrControl+Alt+D",
-              visible: params.selectionText.trim().length > 0,
-              click: () => {
-                inspecElement(params.x, params.y)
-              }
-            },
-            {
-              label: 'Element untersuchen',
-              accelerator: "CommandOrControl+Alt+D",
-              visible: params.mediaType === "image",
               click: () => {
                 inspecElement(params.x, params.y)
               }

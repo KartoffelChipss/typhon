@@ -27,6 +27,32 @@ body {
     font-family: 'Sora', sans-serif;
 }
 
+#banner {
+    display: none;
+    position: fixed;
+    top: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 25px;
+    z-index: 100;
+    border-radius: 7px;
+}
+
+#banner h3 {
+    color: #E0E0E0;
+    font-size: 25px;
+    font-weight: 500;
+    margin: 0;
+}
+
+#banner.alert-success {
+    background-color: rgb(29, 165, 17);
+}
+
+#banner.alert-danger {
+    background-color: red;
+}
+
 .tab-bg {
     position: fixed;
     bottom: 0;
@@ -57,6 +83,7 @@ body {
     color: #E0E0E0;
     border-radius: 100%;
     transition: all .2s ease-in-out;
+    aspect-ratio: 1 / 1;
 }
 
 .top button.reloadBtn:hover {
@@ -71,6 +98,7 @@ body {
     color: #9c9c9c;
     border-radius: 100%;
     transition: all .2s ease-in-out;
+    aspect-ratio: 1 / 1;
 }
 
 .top button.moveBtn:hover {
@@ -105,6 +133,22 @@ body {
     border: #40e0d0 solid 2px;
 }
 
+#settingsBtn {
+    border: none;
+    outline: none;
+    background-color: transparent;
+    color: #9c9c9c;
+    border-radius: 100%;
+    transition: all .2s ease-in-out;
+    aspect-ratio: 1 / 1;
+    margin-right: 5px;
+}
+
+#settingsBtn:hover {
+    background-color: #3F3F3F;
+    cursor: pointer;
+}
+
 .navbuttons {
     position: fixed;
     display: flex;
@@ -113,7 +157,7 @@ body {
     right: 0px;
     background-color: transparent;
     margin: 0;
-    z-index: 10;
+    z-index: 50;
     -webkit-app-region: no-drag;
 }
 
@@ -175,6 +219,104 @@ body {
     border: none;
     background-color: transparent;
     color: #E0E0E0;
+}
+
+.settingsOuter {
+    position: absolute;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 40;
+    background-color: rgba(17, 17, 17, 0.418)
+}
+
+.settingsOuter .settings {
+    position: relative;
+    background-color: #2D2D2D;
+    border-radius: 7px;
+    padding: 20px;
+    height: 60%;
+    width: 30%;
+}
+
+.settings .closeBtn {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    background-color: transparent;
+    border: none;
+    color: #E0E0E0;
+    border-radius: 100%;
+    aspect-ratio: 1 / 1;
+}
+
+.settings .closeBtn:hover {
+    background-color: #3F3F3F;
+    cursor: pointer;
+}
+
+.settings h1 {
+    color: #E0E0E0;
+    margin: 0;
+    margin-bottom: 15px;
+    padding-bottom: 5px;
+    border-bottom: #40e0d0 solid 3px;
+    font-size: 35px;
+    font-weight: 600;
+}
+
+.settings-collapsible {
+    color: #E0E0E0;
+    display: flex;
+    align-items: center;
+}
+
+.settings-collapsible:hover {
+    cursor: pointer;
+}
+
+.collapsible-icon {
+    background-color: initial;
+    border: none;
+    color: #E0E0E0;
+    transition: all .1s ease-in-out;
+}
+
+.collapsible-icon:hover {
+    cursor: pointer;
+}
+
+.settings-content {
+    display: flex;
+    flex-direction: column;
+    color: #E0E0E0;
+    margin-top: 5px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+    margin-left: 15px;
+}
+
+.settings-content button {
+    background-color: transparent;
+    border: #40e0d0 solid 2px;
+    padding: 10px;
+    margin: 10px;
+    color: #E0E0E0;
+    font-size: 20px;
+    border-radius: 5px;
+    transition: all .2s ease-in-out;
+    width: fit-content;
+}
+
+.settings-content button:hover {
+    cursor: pointer;
+    background: #00ACEE;
+    border-color: #00ACEE;
 }
 
 webview {

@@ -1,6 +1,7 @@
 const { app } = require("electron");
 const TabGroup = require("electron-tabs");
 const { ipcRenderer } = require("electron/renderer");
+const { isProxy } = require("util/types");
 const ipc = require('electron').ipcRenderer;
 
 const backBtn = document.getElementById("backBtn");
@@ -35,6 +36,10 @@ tabGroup.on("tab-active", (tab, tabGroup) => {
         urlInput.value = webviewUrl;
     }
 
+    if (webviewUrl.includes("defaultPage.html") && webviewUrl.includes("website_not_available.html") && urlInput !== document.activeElement && webviewUrl !== urlInput) {
+        urlInput.value = "";
+    }
+
     if (!webviewUrl.includes("defaultPage.html") && !webviewUrl.includes("website_not_available.html")) {
         if (tab.webview.canGoForward()) {
             forwardBtn.classList.add("enabled");
@@ -50,6 +55,61 @@ tabGroup.on("tab-active", (tab, tabGroup) => {
         
         tab.setTitle(tab.webview.getTitle())
     }
+
+    tab.webview.addEventListener("page-favicon-updated", (favicons) => {
+        console.log("Favicon updated!")
+        let favicon = favicons.favicons[favicons.favicons.length - 1];
+        console.log(favicon)
+        if (favicon) {
+            tab.setIcon(favicon);
+        } else {
+            tab.setIcon("./assets/typhon_gradient.ico");
+        }
+    })
+
+    tab.webview.addEventListener("page-title-updated", (title) => {
+        console.log("Title updated!");
+        tab.setTitle(title.title);
+    });
+
+    tab.webview.addEventListener("did-navigate", (url) => {
+        url = url.url;
+        if (url !== urlInput.value && !url.includes("website_not_available.html") && !url.includes("defaultPage.html")) {
+            urlInput.value = url;
+        }
+    
+        if (urlInput.value.includes("website_not_available.html") || urlInput.value.includes("defaultPage.html")) {
+            urlInput.value = "";
+            console.log("is default page");
+        }
+
+        if (tab.webview.canGoForward()) {
+            forwardBtn.classList.add("enabled");
+        } else {
+            forwardBtn.classList.remove("enabled");
+        }
+    
+        if (tab.webview.canGoBack() === true) {
+            backBtn.classList.add("enabled");
+        } else {
+            backBtn.classList.remove("enabled");
+        }
+    
+        tab.webview.executeJavaScript("document.querySelectorAll('a').forEach(a => {a.target = '_self'})");
+    });
+
+    tab.webview.addEventListener("did-navigate-in-page", (url) => {
+        url = url.url;
+
+        if (url !== urlInput.value && !url.includes("website_not_available.html") && !url.includes("defaultPage.html")) {
+            urlInput.value = url;
+        }
+    
+        if (urlInput.value.includes("website_not_available.html") || urlInput.value.includes("defaultPage.html")) {
+            urlInput.value = "";
+            console.log("is default page");
+        }
+    });
 });
 
 tabGroup.on("tab-removed", (tab, tabGroup) => {
@@ -64,6 +124,65 @@ tabGroup.on("tab-removed", (tab, tabGroup) => {
 });
 
 tabGroup.on("tab-added", (tab, tabGroup) => {
+    tab.webview.addEventListener("page-favicon-updated", (favicons) => {
+        console.log("Favicon updated!");
+        let favicon = favicons.favicons[favicons.favicons.length - 1];
+        console.log(favicon)
+        if (favicon) {
+            tab.setIcon(favicon);
+        } else {
+            tab.setIcon("./assets/typhon_gradient.ico");
+        }
+    });
+
+    tab.webview.addEventListener("page-title-updated", (title) => {
+        console.log("Title updated!");
+        tab.setTitle(title.title);
+    });
+
+    tab.webview.addEventListener("did-navigate", (url) => {
+        url = url.url;
+        if (url !== urlInput.value && !url.includes("website_not_available.html") && !url.includes("defaultPage.html")) {
+            urlInput.value = url;
+        }
+    
+        if (urlInput.value.includes("website_not_available.html") || urlInput.value.includes("defaultPage.html")) {
+            urlInput.value = "";
+            console.log("is default page");
+        }
+
+        if (tab.webview.canGoForward()) {
+            forwardBtn.classList.add("enabled");
+        } else {
+            forwardBtn.classList.remove("enabled");
+        }
+    
+        if (tab.webview.canGoBack() === true) {
+            backBtn.classList.add("enabled");
+        } else {
+            backBtn.classList.remove("enabled");
+        }
+    
+        tab.webview.executeJavaScript("document.querySelectorAll('a').forEach(a => {a.target = '_self'})");
+    });
+
+    tab.webview.addEventListener("did-navigate-in-page", (url) => {
+        url = url.url;
+
+        if (url !== urlInput.value && !url.includes("website_not_available.html") && !url.includes("defaultPage.html")) {
+            urlInput.value = url;
+        }
+    
+        if (urlInput.value.includes("website_not_available.html") || urlInput.value.includes("defaultPage.html")) {
+            urlInput.value = "";
+            console.log("is default page");
+        }
+    });
+
+    tab.once("webview-dom-ready", (tab) => {
+        urlInput.value = "";
+    });
+
     tab.on("webview-dom-ready", (tab) => {
         let windowWidth = document.body.offsetWidth - 180;
         let tabWidth = 150;
@@ -74,8 +193,7 @@ tabGroup.on("tab-added", (tab, tabGroup) => {
             const rightmostTab = tabGroup.getTabByPosition(-1);
             rightmostTab.activate();
         }
-        
-        urlInput.value = "";
+
         urlInput.focus();   
     });
 });
@@ -96,35 +214,35 @@ if (activeTab) {
     })
 }
 
-setInterval(() => {
-    let activeTab = tabGroup.getActiveTab();
-    let webviewUrl = activeTab.webview.getURL();
+// setInterval(() => {
+//     let activeTab = tabGroup.getActiveTab();
+//     let webviewUrl = activeTab.webview.getURL();
 
-    if (urlInput !== document.activeElement && webviewUrl !== urlInput.value && !webviewUrl.includes("website_not_available.html") && !webviewUrl.includes("defaultPage.html")) {
-        urlInput.value = webviewUrl;
-    }
+//     if (urlInput !== document.activeElement && webviewUrl !== urlInput.value && !webviewUrl.includes("website_not_available.html") && !webviewUrl.includes("defaultPage.html")) {
+//         urlInput.value = webviewUrl;
+//     }
 
-    if (urlInput !== document.activeElement && (urlInput.value.includes("website_not_available.html") || urlInput.value.includes("defaultPage.html"))) {
-        urlInput.value = "";
-    }
+//     if (urlInput !== document.activeElement && (urlInput.value.includes("website_not_available.html") || urlInput.value.includes("defaultPage.html"))) {
+//         urlInput.value = "";
+//     }
 
-    activeTab.setTitle(activeTab.webview.getTitle())
+//     //activeTab.setTitle(activeTab.webview.getTitle())
 
-    if (activeTab.webview.canGoForward()) {
-        forwardBtn.classList.add("enabled");
-    } else {
-        forwardBtn.classList.remove("enabled");
-    }
+//     if (activeTab.webview.canGoForward()) {
+//         forwardBtn.classList.add("enabled");
+//     } else {
+//         forwardBtn.classList.remove("enabled");
+//     }
 
-    if (activeTab.webview.canGoBack() === true) {
-        backBtn.classList.add("enabled");
-    } else {
-        backBtn.classList.remove("enabled");
-    }
+//     if (activeTab.webview.canGoBack() === true) {
+//         backBtn.classList.add("enabled");
+//     } else {
+//         backBtn.classList.remove("enabled");
+//     }
 
-    activeTab.webview.executeJavaScript("document.querySelectorAll('a').forEach(a => {a.target = '_self'})");
+//     activeTab.webview.executeJavaScript("document.querySelectorAll('a').forEach(a => {a.target = '_self'})");
 
-}, 1000)
+// }, 1000)
 
 // https://www.electronjs.org/de/docs/latest/api/webview-tag
 
@@ -225,7 +343,6 @@ function go() {
                     activeTab.webview.loadURL("https://" + urlInputValue)
                 } else {
                     activeTab.webview.loadURL("http://" + urlInputValue).catch(err2 => {
-                        console.log("Test")
                         console.error;
                         activeTab.webview.loadURL("file://" +  __dirname + "/public/website_not_available.html");
                     });
@@ -331,9 +448,9 @@ function closeApp() {
         
         
         if (tabb.id === tabGroup.getActiveTab().id) {
-            tabs.push({url: tabURl, title: tabb.title, active: true});
+            tabs.unshift({url: tabURl, title: tabb.title, active: true});
         } else {
-            tabs.push({url: tabURl, title: tabb.title, active: false});
+            tabs.unshift({url: tabURl, title: tabb.title, active: false});
         }
 
     })
@@ -349,6 +466,55 @@ function minimizeWindow() {
 function maximizeWindow() {
     ipc.send("maximize");
 }
+
+function toggleSettings() {
+    const settingsContainer = document.getElementById("settingsOuter");
+    if (settingsContainer.style.display === "flex") {
+        settingsContainer.style.display = "none";
+    } else {
+        settingsContainer.style.display = "flex";
+    }
+}
+
+var coll = document.getElementsByClassName("collapsible");
+var i;
+
+for (i = 0; i < coll.length; i++) {
+    coll[i].addEventListener("click", function() {
+        this.classList.toggle("active");
+        var content = this.nextElementSibling;
+        if (content.style.maxHeight){
+            content.style.maxHeight = null;
+            this.getElementsByClassName("collapsible-icon")[0].style.transform = "rotate(0deg)";
+        } else {
+            content.style.maxHeight = content.scrollHeight + "px";
+            this.getElementsByClassName("collapsible-icon")[0].style.transform = "rotate(180deg)";
+        } 
+    });
+}
+
+function showBanner(msg, type) {
+    const banner = document.getElementById("banner");
+    const title = banner.getElementsByTagName("h3")[0];
+
+    banner.classList.add(type);
+    title.innerHTML = msg;
+    banner.style.display = "block";
+
+    setTimeout(() => {
+        banner.style.display = "none";
+        banner.classList.remove(type);
+        title.innerHTML = "Message";
+    }, 4000)
+}
+
+function delData(dataType) {
+    ipc.send("delData", dataType);
+}
+
+ipc.on("delDataConfirm", () => {
+    showBanner("Daten erfolgreich gelöscht!", "alert-success");
+});
 
 ipc.on("newTab", () => {
     const newTab = tabGroup.addTab({
