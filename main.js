@@ -14,9 +14,6 @@ let rightClickPosition = null;
 
 const store = new Store();
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
 app.whenReady().then(async () => {
 
   loadingwindow = new BrowserWindow({
@@ -273,6 +270,17 @@ app.whenReady().then(async () => {
     app.quit()
   });
 
+  ipcMain.on("addBookmark", (e, bookmark) => {
+    if (!store.get("bookmarks")) {
+      store.set("bookmarks", []);
+      console.log("No Bookmarks found");
+    }
+
+    let bookmarks = store.get("bookmarks");
+    bookmarks.unshift(bookmark);
+    store.set("bookmarks", bookmarks);
+  });
+
   mainWindow.webContents.on('did-finish-load', () => {
     contextMenu({
       window: mainWindow,
@@ -442,22 +450,6 @@ app.whenReady().then(async () => {
             }
           ],
           append: (defaultActions, params, mainWindow) => [
-            // {
-            //   label: 'Element untersuchen',
-            //   accelerator: "CommandOrControl+Alt+D",
-            //   visible: params.selectionText.trim().length <= 0 && params.mediaType !== 'image',
-            //   click: () => {
-            //     openDevTools();
-            //   }
-            // },
-            // {
-            //   label: 'Element untersuchen',
-            //   accelerator: "CommandOrControl+Alt+D",
-            //   visible: params.selectionText.trim().length > 0,
-            //   click: () => {
-            //     inspecElement(params.x, params.y)
-            //   }
-            // },
             {
               label: 'Element untersuchen',
               accelerator: "CommandOrControl+Alt+D",

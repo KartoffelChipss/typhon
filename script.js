@@ -445,8 +445,7 @@ function closeApp() {
     let tabs = [];
     allTabs.forEach(tabb => {
         let tabURl = tabb.webview.getURL();
-        
-        
+
         if (tabb.id === tabGroup.getActiveTab().id) {
             tabs.unshift({url: tabURl, title: tabb.title, active: true});
         } else {
@@ -510,6 +509,43 @@ function showBanner(msg, type) {
 
 function delData(dataType) {
     ipc.send("delData", dataType);
+}
+
+function addBookmark() {
+    let activeTab = tabGroup.getActiveTab();
+    let webviewUrl = activeTab.webview.getURL();
+    let bookmarkTitle;
+    let bookmarkUrl;
+
+    if (!document.getElementById("bookmarkTitle").value) {
+        bookmarkTitle = activeTab.getTitle();
+    } else {
+        bookmarkTitle = document.getElementById("bookmarkTitle").value;
+    }
+
+    if (!document.getElementById("bookmarkUrl").value) {
+        bookmarkUrl = activeTab.getTitle();
+    } else {
+        bookmarkUrl = document.getElementById("bookmarkUrl").value;
+    }
+
+    ipc.send("addBookmark", {
+        title: bookmarkTitle,
+        icon: activeTab.getIcon(),
+        url: bookmarkUrl,
+        type: "bookmark",
+    });
+
+    document.getElementById("bookmarkModal").style.display = "none";
+}
+
+function openAddBookmarks() {
+    let activeTab = tabGroup.getActiveTab();
+    let webviewUrl = activeTab.webview.getURL();
+
+    document.getElementById("bookmarkModal").style.display = "flex";
+    document.getElementById("bookmarkModal").getElementsByTagName("input")[0].value = activeTab.getTitle();
+    document.getElementById("bookmarkModal").getElementsByTagName("input")[1].value = webviewUrl;
 }
 
 ipc.on("delDataConfirm", () => {

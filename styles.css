@@ -5,8 +5,6 @@
     --top-height: 53px;
 }
 
-i.material-icons{font-family:'Material Icons';font-weight:400;font-style:normal;font-size:24px;line-height:1;letter-spacing:normal;text-transform:none;display:inline-block;word-wrap:normal;-moz-font-feature-settings:'liga';font-feature-settings:'liga';-webkit-font-feature-settings:'liga';-webkit-font-smoothing:antialiased}
-
 :focus {
     outline: #40e0d0;
 }
@@ -149,6 +147,26 @@ body {
     cursor: pointer;
 }
 
+#bookmarkBtn {
+    border: none;
+    outline: none;
+    background-color: transparent;
+    color: #9c9c9c;
+    border-radius: 100%;
+    font-size: 20px;
+    transform: scale(0.9);
+    transition: all .2s ease-in-out;
+    aspect-ratio: 1 / 1;
+    margin-right: 5px;
+    position: absolute;
+    right: 44px;
+    top: 9px;
+}
+
+#bookmarkBtn:hover {
+    cursor: pointer;
+}
+
 .navbuttons {
     position: fixed;
     display: flex;
@@ -219,6 +237,75 @@ body {
     border: none;
     background-color: transparent;
     color: #E0E0E0;
+}
+
+#bookmarkModal {
+    display: none;
+    position: fixed;
+    align-items: flex-start;
+    right: 50px;
+    top: 100px;
+    z-index: 100;
+    width: 250px;
+    background-color: #2D2D2D;
+    padding: 15px;
+    border-radius: 7px;
+    animation: grow 0.15s ease;
+}
+
+#bookmarkModal .content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+#bookmarkModal label {
+    color: #E0E0E0;
+}
+
+#bookmarkModal input {
+    border: none;
+    padding: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #E0E0E0;
+    border-radius: 3px;
+    background-color: #3F3F3F;
+    width: 90%;
+    flex-grow: 1;
+    border: #2D2D2D solid 2px;
+}
+
+#bookmarkModal input:focus {
+    outline: none;
+    border: #40e0d0 solid 2px;
+}
+
+#bookmarkModal button.closeBtn {
+    margin: 0;
+    margin-left: 5px;
+    border: none;
+    background-color: transparent;
+    color: #E0E0E0;
+}
+
+#bookmarkModal button:hover {
+    cursor: pointer;
+}
+
+#addBookmarkBtn {
+    background-color: transparent;
+    border: #40e0d0 solid 3px;
+    padding: 5px;
+    font-size: 18px;
+    width: 95%;
+    border-radius: 3px;
+    color: #E0E0E0;
+    transition: all .4s ease-in-out;
+}
+
+#addBookmarkBtn:hover {
+    background-color: #40e0d0;
 }
 
 .settingsOuter {
