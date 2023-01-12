@@ -12,17 +12,17 @@
     "appId": "typhon",
     "mac": {
       "target": "dmg",
-      "icon": "assets/typhon_gradient.ico"
+      "icon": "assets/typhon_colored_900x900.ico"
     },
     "win": {
       "target": [
         "nsis"
       ],
-      "icon": "assets/typhon_gradient.ico"
+      "icon": "assets/typhon_colored_900x900.ico"
     },
     "nsis": {
-      "installerIcon": "assets/typhon_gradient.ico",
-      "uninstallerIcon": "assets/typhon_gradient.ico",
+      "installerIcon": "assets/typhon_colored_900x900.ico",
+      "uninstallerIcon": "assets/typhon_colored_900x900.ico",
       "uninstallDisplayName": "Typhon",
       "license": "LICENSE",
       "oneClick": false,

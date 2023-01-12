@@ -14,7 +14,7 @@ tabGroup.setDefaultTab({
     title: "Neuer Tab",
     src: "file://" +  __dirname + "/public/defaultPage.html",
     active: true,
-    iconURL: "./assets/typhon_gradient.ico",
+    iconURL: "./assets/typhon_colored_900x900.ico",
 });
 
 ipc.once("noPreviousTabs", () => {
@@ -22,7 +22,7 @@ ipc.once("noPreviousTabs", () => {
         title: "Neuer Tab",
         src: "file://" +  __dirname + "/public/defaultPage.html",
         active: true,
-        iconURL: "./assets/typhon_gradient.ico",
+        iconURL: "./assets/typhon_colored_900x900.ico",
     });
 
     firstTab.once("webview-dom-ready", (tab) => {
@@ -63,7 +63,7 @@ tabGroup.on("tab-active", (tab, tabGroup) => {
         if (favicon) {
             tab.setIcon(favicon);
         } else {
-            tab.setIcon("./assets/typhon_gradient.ico");
+            tab.setIcon("./assets/typhon_colored_900x900.ico");
         }
     })
 
@@ -118,7 +118,7 @@ tabGroup.on("tab-removed", (tab, tabGroup) => {
             title: "Neuer Tab",
             src: "file://" +  __dirname + "/public/defaultPage.html",
             active: true,
-            iconURL: "./assets/typhon_gradient.ico",
+            iconURL: "./assets/typhon_colored_900x900.ico",
         });
     }
 });
@@ -131,7 +131,7 @@ tabGroup.on("tab-added", (tab, tabGroup) => {
         if (favicon) {
             tab.setIcon(favicon);
         } else {
-            tab.setIcon("./assets/typhon_gradient.ico");
+            tab.setIcon("./assets/typhon_colored_900x900.ico");
         }
     });
 
@@ -208,7 +208,7 @@ if (activeTab) {
                 title: "Neuer Tab",
                 src: e.url,
                 active: true,
-                iconURL: "./assets/typhon_gradient.ico",
+                iconURL: "./assets/typhon_colored_900x900.ico",
             });
         }
     })
@@ -557,7 +557,7 @@ ipc.on("newTab", () => {
         title: "Neuer Tab",
         src: "file://" +  __dirname + "/public/defaultPage.html",
         active: true,
-        iconURL: "./assets/typhon_gradient.ico",
+        iconURL: "./assets/typhon_colored_900x900.ico",
     });
     urlInput.focus();
 });
@@ -626,7 +626,7 @@ ipc.on("openTab", (e, tab) => {
     let newTab = tabGroup.addTab({
         title: tab.title,
         src: tabURL,
-        iconURL: "./assets/typhon_gradient.ico",
+        iconURL: "./assets/typhon_colored_900x900.ico",
     })
     
     if (tab.active === true) {
@@ -642,7 +642,7 @@ ipc.on("linkInNewTab", (e, openLink) => {
         title: "Neuer Tab",
         src: openLink,
         active: true,
-        iconURL: "./assets/typhon_gradient.ico",
+        iconURL: "./assets/typhon_colored_900x900.ico",
     });
 });
 

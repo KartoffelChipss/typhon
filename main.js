@@ -23,7 +23,7 @@ app.whenReady().then(async () => {
     movable : false,
     resizable: false,
     backgroundColor: "#2D2D2D",
-    icon: __dirname + '/assets/typhon_gradient_max.ico',
+    icon: __dirname + '/assets/typhon_colored_900x900.ico',
   })
 
   loadingwindow.loadFile('loading.html') // To load the activity loader html file
@@ -58,7 +58,7 @@ app.whenReady().then(async () => {
     frame: false,
     show: false,
     autoHideMenuBar: true,
-    icon: __dirname + '/assets/typhon_gradient_max.ico',
+    icon: __dirname + '/assets/typhon_colored_900x900.ico',
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: true,
