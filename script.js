@@ -475,6 +475,15 @@ function toggleSettings() {
     }
 }
 
+function toggleBookmarks() {
+    const bookmarkContainer = document.getElementById("bookmarksOuter");
+    if (bookmarkContainer.style.display === "flex") {
+        bookmarkContainer.style.display = "none";
+    } else {
+        bookmarkContainer.style.display = "flex";
+    }
+}
+
 var coll = document.getElementsByClassName("collapsible");
 var i;
 
@@ -651,4 +660,11 @@ ipc.on("inspectElement", (e, x, y) => {
     console.log(y)
     let activeTab = tabGroup.getActiveTab();
     activeTab.webview.inspectElement(x, y);
+});
+
+ipc.on("bookmarks", (e, bookmarks) => {
+    const bookmarkContainer = document.getElementById("bookmaks-content");
+    bookmarks.forEach(bookmark => {
+        bookmarkContainer.innerHTML += `<a href="${bookmark.url}">${bookmark.title}</a>`;
+    });
 });

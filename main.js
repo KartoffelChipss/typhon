@@ -208,9 +208,14 @@ app.whenReady().then(async () => {
       store.delete("lastTabs");
     }
 
+    if (dataType === "bookmarks") {
+      store.delete("bookmarks");
+    }
+
     if (dataType === "all") {
       store.delete("lastBounds");
       store.delete("lastTabs");
+      store.delete("bookmarks");
     }
 
     mainWindow.webContents.send("delDataConfirm");
@@ -228,6 +233,9 @@ app.whenReady().then(async () => {
       })
     }
   })
+
+  let bookmarks = store.get("bookmarks");
+  mainWindow.webContents.send("bookmarks", bookmarks);
 
   ipcMain.on("activeTabReady", () => {
     console.log("App ready");

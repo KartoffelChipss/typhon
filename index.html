@@ -36,9 +36,21 @@
                     <div class="settings-content">
                         <button type="button" onclick="delData('pos')">Letzte Fensterposition löschen</button>
                         <button type="button" onclick="delData('lastTabs')">Zuletzt geöffnete Tabs löschen</button>
+                        <button type="button" onclick="delData('bookmarks')">Lesezeichen löschen</button>
                         <button type="button" onclick="delData('all')">Alle Daten löschen</button>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="settingsOuter" id="bookmarksOuter">
+        <div class="settings">
+            <button class="closeBtn" type="button" onclick="toggleBookmarks()"><i class="material-icons" style="padding-top: 3px;">close</i></button>
+
+            <h1>Lesezeichen</h1>
+            <div class="bookmaks-content" id="bookmaks-content">
+
             </div>
         </div>
     </div>
@@ -49,6 +61,7 @@
         <button class="reloadBtn" type="button" id="reloadBtn" onclick="reloadPage()"><i class="material-icons" style="padding-top: 3.5px;">refresh</i></button>
         <input class="url" id="url" type="text" placeholder="URL eingeben oder mit Google suchen" onkeydown="go()">
         <button class="bookmarktBtn" id="bookmarkBtn" type="button" onclick="openAddBookmarks()"><i class="material-icons material-symbols-outlined" style="padding-top: 3.5px;" id="bookmarkBtnIcon">star</i></button>
+        <button class="settingsBtn" id="openBookmarksBtn" onclick="toggleBookmarks()"><i class="material-icons" style="padding-top: 3.5px;">bookmarks</i></button>
         <button class="settingsBtn" id="settingsBtn" onclick="toggleSettings()"><i class="material-icons" style="padding-top: 3.5px;">settings</i></button>
     </div>
 

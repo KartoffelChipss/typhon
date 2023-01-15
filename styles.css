@@ -131,6 +131,22 @@ body {
     border: #40e0d0 solid 2px;
 }
 
+#openBookmarksBtn {
+    border: none;
+    outline: none;
+    background-color: transparent;
+    color: #9c9c9c;
+    border-radius: 100%;
+    transition: all .2s ease-in-out;
+    aspect-ratio: 1 / 1;
+    margin-right: 5px;
+}
+
+#openBookmarksBtn:hover {
+    background-color: #3F3F3F;
+    cursor: pointer;
+}
+
 #settingsBtn {
     border: none;
     outline: none;
@@ -159,7 +175,7 @@ body {
     aspect-ratio: 1 / 1;
     margin-right: 5px;
     position: absolute;
-    right: 44px;
+    right: 88px;
     top: 9px;
 }
 
@@ -404,6 +420,18 @@ body {
     cursor: pointer;
     background: #00ACEE;
     border-color: #00ACEE;
+}
+
+.bookmaks-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.bookmaks-content a {
+    color: #e0e0e0;
+    font-size: 20px;
+    text-decoration: none;
+    width: fit-content;
 }
 
 webview {
