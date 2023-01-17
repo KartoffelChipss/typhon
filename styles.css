@@ -324,6 +324,23 @@ body {
     background-color: #40e0d0;
 }
 
+#bookmarksOuter button.otherBookmarks-bookmark {
+    background-color: transparent;
+    border: #40e0d0 solid 3px;
+    padding: 5px;
+    font-size: 18px;
+    width: 95%;
+    border-radius: 3px;
+    color: #E0E0E0;
+    margin-bottom: 10px;
+    transition: all .4s ease-in-out;
+}
+
+#bookmarksOuter button.otherBookmarks-bookmark:hover {
+    cursor: pointer;
+    background-color: #40e0d0;
+}
+
 .settingsOuter {
     position: absolute;
     display: none;

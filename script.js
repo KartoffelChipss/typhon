@@ -670,6 +670,6 @@ ipc.on("inspectElement", (e, x, y) => {
 ipc.on("bookmarks", (e, bookmarks) => {
     const bookmarkContainer = document.getElementById("bookmaks-content");
     bookmarks.moreBookmarks.items.forEach(bookmark => {
-        bookmarkContainer.innerHTML += `<button type="button" onclick="openLinkinnewTab(${bookmark.url})">${bookmark.title}</button>`;
+        bookmarkContainer.innerHTML += `<button type="button" onclick="openLinkinnewTab(${bookmark.url})" class="otherBookmarks-bookmark">${bookmark.title}</button>`;
     });
 });
