@@ -279,7 +279,7 @@ body {
     color: #E0E0E0;
 }
 
-#bookmarkModal input {
+#bookmarkModal input, select {
     border: none;
     padding: 6px;
     font-size: 14px;

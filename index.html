@@ -74,8 +74,12 @@
         <div class="content">
             <label for="bookmarkTitle">Titel</label>
             <input type="text" name="bookmarkTitle" id="bookmarkTitle" placeholder="Lesezeichen Titel">
-            <label for="bookmarkUrl" style="margin-top: 15px;">Adresse</label>
-            <input type="text" name="bookmarkUrl" id="bookmarkUrl" placeholder="Lesezeichen URL">
+            <label for="bookmarkFolder" style="margin-top: 15px;">Ordner</label>
+            <!-- <input type="text" name="bookmarkUrl" id="bookmarkUrl" placeholder="Lesezeichen URL"> -->
+            <select name="bookmarkFolder" id="bookmarkFolder">
+                <option value="favorites" selected>Lesezeichenleiste</option>
+                <option value="moreBookmarks">Weitere Lesezeichen</option>
+            </select>
             <button style="margin-top: 15px;" type="text" id="addBookmarkBtn" onclick="addBookmark()">Speichern</button>
         </div>
         <button type="button" class="closeBtn"><i class="material-icons" onclick="document.getElementById('bookmarkModal').style.display = 'none'">close</i></button>

@@ -526,6 +526,7 @@ function addBookmark() {
     let webviewUrl = activeTab.webview.getURL();
     let bookmarkTitle;
     let bookmarkUrl;
+    let bookmarkFolder;
 
     if (!document.getElementById("bookmarkTitle").value) {
         bookmarkTitle = activeTab.getTitle();
@@ -533,18 +534,18 @@ function addBookmark() {
         bookmarkTitle = document.getElementById("bookmarkTitle").value;
     }
 
-    if (!document.getElementById("bookmarkUrl").value) {
-        bookmarkUrl = activeTab.getTitle();
+    if (!document.getElementById("bookmarkFolder").value) {
+        bookmarkFolder = "favorites";
     } else {
-        bookmarkUrl = document.getElementById("bookmarkUrl").value;
+        bookmarkFolder = document.getElementById("bookmarkFolder").value;
     }
 
     ipc.send("addBookmark", {
         title: bookmarkTitle,
         icon: activeTab.getIcon(),
-        url: bookmarkUrl,
+        url: webviewUrl,
         type: "bookmark",
-    });
+    }, bookmarkFolder);
 
     document.getElementById("bookmarkModal").style.display = "none";
 }
@@ -555,7 +556,6 @@ function openAddBookmarks() {
 
     document.getElementById("bookmarkModal").style.display = "flex";
     document.getElementById("bookmarkModal").getElementsByTagName("input")[0].value = activeTab.getTitle();
-    document.getElementById("bookmarkModal").getElementsByTagName("input")[1].value = webviewUrl;
 }
 
 ipc.on("delDataConfirm", () => {
@@ -647,13 +647,17 @@ ipc.on("openTab", (e, tab) => {
     }
 });
 
-ipc.on("linkInNewTab", (e, openLink) => {
+function openLinkinnewTab(link) {
     const newTab = tabGroup.addTab({
         title: "Neuer Tab",
-        src: openLink,
+        src: link,
         active: true,
         iconURL: "./assets/typhon_colored_900x900.ico",
     });
+}
+
+ipc.on("linkInNewTab", (e, openLink) => {
+    openLinkinnewTab(openLink);
 });
 
 ipc.on("inspectElement", (e, x, y) => {
@@ -665,7 +669,7 @@ ipc.on("inspectElement", (e, x, y) => {
 
 ipc.on("bookmarks", (e, bookmarks) => {
     const bookmarkContainer = document.getElementById("bookmaks-content");
-    bookmarks.forEach(bookmark => {
-        bookmarkContainer.innerHTML += `<a href="${bookmark.url}">${bookmark.title}</a>`;
+    bookmarks.moreBookmarks.items.forEach(bookmark => {
+        bookmarkContainer.innerHTML += `<button type="button" onclick="openLinkinnewTab(${bookmark.url})">${bookmark.title}</button>`;
     });
 });

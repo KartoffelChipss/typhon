@@ -9,6 +9,7 @@ const { ipcMain } = require('electron/main');
 const Store = require('electron-store');
 const contextMenu = require('electron-context-menu');
 const checkInternetConnected = require('check-internet-connected');
+const { deflateRawSync } = require('zlib');
 
 var loadingwindow = null;
 let rightClickPosition = null;
@@ -223,12 +224,44 @@ app.whenReady().then(async () => {
     
         if (dataType === "bookmarks") {
           store.delete("bookmarks");
+          store.set("bookmarks", {
+            favorites: {
+              title: "Lesezeichenleiste",
+              icon: "none",
+              url: "none",
+              type: "folder",
+              items: [],
+            },
+            moreBookmarks: {
+              title: "Weitere Lesezeichen",
+              icon: "none",
+              url: "none",
+              type: "folder",
+              items: [],
+            }
+          });
         }
     
         if (dataType === "all") {
           store.delete("lastBounds");
           store.delete("lastTabs");
           store.delete("bookmarks");
+          store.set("bookmarks", {
+            favorites: {
+              title: "Lesezeichenleiste",
+              icon: "none",
+              url: "none",
+              type: "folder",
+              items: [],
+            },
+            moreBookmarks: {
+              title: "Weitere Lesezeichen",
+              icon: "none",
+              url: "none",
+              type: "folder",
+              items: [],
+            }
+          });
         }
     
         mainWindow.webContents.send("delDataConfirm");
@@ -248,10 +281,12 @@ app.whenReady().then(async () => {
       })
     
       let bookmarks = store.get("bookmarks");
-      mainWindow.webContents.send("bookmarks", bookmarks);
+
+      console.log(bookmarks)
     
       ipcMain.on("activeTabReady", () => {
         console.log("App ready");
+        mainWindow.webContents.send("bookmarks", bookmarks);
         mainWindow.show();
         openedWindows = true;
         if (pastBounds && pastBounds.maximized === true) {
@@ -292,15 +327,30 @@ app.whenReady().then(async () => {
         app.quit()
       });
     
-      ipcMain.on("addBookmark", (e, bookmark) => {
+      ipcMain.on("addBookmark", (e, bookmark, folder) => {
         if (!store.get("bookmarks")) {
-          store.set("bookmarks", []);
+          store.set("bookmarks", {
+            favorites: {
+              title: "Lesezeichenleiste",
+              icon: "none",
+              url: "none",
+              type: "folder",
+              items: [],
+            },
+            moreBookmarks: {
+              title: "Weitere Lesezeichen",
+              icon: "none",
+              url: "none",
+              type: "folder",
+              items: [],
+            }
+          });
           console.log("No Bookmarks found");
         }
-    
+
         let bookmarks = store.get("bookmarks");
-        bookmarks.unshift(bookmark);
-        store.set("bookmarks", bookmarks);
+        bookmarks[folder].items.unshift(bookmark);
+        store.set(`bookmarks`, bookmarks);
       });
     
       mainWindow.webContents.on('did-finish-load', () => {
