@@ -542,11 +542,27 @@ app.whenReady().then(async () => {
         frame: false,
         backgroundColor: "#2D2D2D",
         icon: __dirname + '/assets/typhon_colored_900x900.ico',
+        webPreferences: {
+          nodeIntegration: true,
+          contextIsolation: false,
+        }
       });
 
       noInternetWindow.maximize();
       noInternetWindow.loadFile("./public/noInternet.html")
       noInternetWindow.show();
+
+      ipcMain.on("minimize", () => {
+        noInternetWindow.isMinimized() ? noInternetWindow.restore() : noInternetWindow.minimize();
+      });
+    
+      ipcMain.on("maximize", () => {
+        noInternetWindow.isMaximized() ? noInternetWindow.unmaximize() : noInternetWindow.maximize();
+      });
+
+      ipcMain.on("close", (e, tabs) => {
+        app.quit();
+      });
     });
 })
 

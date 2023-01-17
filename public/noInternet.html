@@ -4,9 +4,12 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Website not available</title>
+    <title>Keine Internetverbindung</title>
+    <script src="./navFunctions.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Sora:wght@100;200;300;400;500;600;700;800&display=swap');
+        @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
         
         body {
             display: flex;
@@ -15,6 +18,7 @@
             background-color: #f5f5f5;
             color: #000;
             font-family: 'Sora', sans-serif;
+            overflow: hidden;
         }
 
         body .messageDiv {
@@ -33,9 +37,75 @@
         body .messageDiv button:hover {
             cursor: pointer;
         }
+
+        .topBar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #2D2D2D;
+            -webkit-app-region: drag;
+        }
+
+        .topBar .title {
+            display: flex;
+            align-items: center;
+            margin-left: 10px;
+            -webkit-app-region: no-drag;
+        }
+
+        .topBar h1 {
+            color: #ececec;
+            font-size: 17px;
+            font-weight: 500;
+        }
+
+        .topBar .title img {
+            height: 25px;
+            margin-right: 5px;
+        }
+
+        .navbuttons {
+            -webkit-app-region: no-drag;
+        }
+
+        .navbuttons button {
+            background-color: transparent;
+            border: none;
+            color: #666666;
+            padding: 5px;
+            transition: all .2s ease-in-out;
+            height: 40px;
+            width: 40px;
+            text-align: center;
+        }
+
+        .navbuttons button:hover {
+            background-color: rgb(44, 44, 44);
+            color: #f5f5f5;
+        }
+
+        #closeBtn:hover {
+            background-color: red;
+        }
     </style>
 </head>
 <body>
+    <div class="topBar">
+        <div class="title">
+            <img src="../assets/typhon_colored_900x900.ico">
+            <h1>Typhon</h1>
+        </div>
+        <div class="navbuttons">
+            <button type="button" onclick="minimizeWindow()"><i class="material-icons">remove</i></button>
+            <button type="button" onclick="maximizeWindow()"><i class="material-icons">crop_square</i></button>
+            <button type="button" id="closeBtn" onclick="closeApp()"><i class="material-icons">close</i></button>
+        </div>
+    </div>
+
     <div class="messageDiv">
         <h1>Keine Internetverbindung</h1>
         <p>Bitte überprüfe ob eine Verbindung zum Internet hast und versuche es erneut</p>
