@@ -10,6 +10,14 @@ const urlInput = document.getElementById("url");
 
 const tabGroup = document.querySelector("tab-group");
 
+function generateId(prefix) {
+    if (!prefix || typeof prefix !== "string") {
+      prefix = "";
+    }
+  
+    return prefix + Date.now().toString(32) + Math.random().toString(16).replace(/\./g, '');
+}
+
 tabGroup.setDefaultTab({
     title: "Neuer Tab",
     src: "file://" +  __dirname + "/public/defaultPage.html",
@@ -545,6 +553,7 @@ function addBookmark() {
         icon: activeTab.getIcon(),
         url: webviewUrl,
         type: "bookmark",
+        id: generateId("bm"),
     }, bookmarkFolder);
 
     document.getElementById("bookmarkModal").style.display = "none";
@@ -654,6 +663,8 @@ function openLinkinnewTab(link) {
         active: true,
         iconURL: "./assets/typhon_colored_900x900.ico",
     });
+
+    urlInput.value = link;
 }
 
 ipc.on("linkInNewTab", (e, openLink) => {
@@ -669,7 +680,8 @@ ipc.on("inspectElement", (e, x, y) => {
 
 ipc.on("bookmarks", (e, bookmarks) => {
     const bookmarkContainer = document.getElementById("bookmaks-content");
+    bookmarkContainer.innerHTML = "";
     bookmarks.moreBookmarks.items.forEach(bookmark => {
-        bookmarkContainer.innerHTML += `<button type="button" onclick="openLinkinnewTab(${bookmark.url})" class="otherBookmarks-bookmark">${bookmark.title}</button>`;
+        bookmarkContainer.innerHTML += `<div style="display: flex; justify-content: space-between; align-items: center;" id="moreBookmarks_${bookmark.id}"><div style="display: flex; justify-content: space-between; align-items: center;"><img src="${bookmark.icon}" onclick="openLinkinnewTab('${bookmark.url}'); toggleBookmarks();" style="height: 25px;" class="moreBookmarksIcon"><button type="button" onclick="openLinkinnewTab('${bookmark.url}'); toggleBookmarks();" class="otherBookmarks-bookmark">${bookmark.title}</button></div><button type="button" class="closeBtn-normal" onclick="delBookmark('${bookmark.id}')"><i class="material-icons" style="padding-top: 3px;">close</i></button></div>`;
     });
 });

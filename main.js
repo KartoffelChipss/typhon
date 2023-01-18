@@ -17,6 +17,19 @@ let openedWindows = false;
 
 const store = new Store();
 
+function generateId(prefix) {
+  if (!prefix || typeof prefix !== "string") {
+    prefix = "";
+  }
+
+  return prefix + Date.now().toString(32) + Math.random().toString(16).replace(/\./g, '');
+}
+
+function refreshBookmarks(window) {
+  let bookmarks = store.get("bookmarks");
+  window.webContents.send("bookmarks", bookmarks);
+}
+
 app.whenReady().then(async () => {
 
   loadingwindow = new BrowserWindow({
@@ -351,6 +364,8 @@ app.whenReady().then(async () => {
         let bookmarks = store.get("bookmarks");
         bookmarks[folder].items.unshift(bookmark);
         store.set(`bookmarks`, bookmarks);
+
+        refreshBookmarks(mainWindow)
       });
     
       mainWindow.webContents.on('did-finish-load', () => {

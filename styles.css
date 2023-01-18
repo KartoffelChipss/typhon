@@ -326,19 +326,39 @@ body {
 
 #bookmarksOuter button.otherBookmarks-bookmark {
     background-color: transparent;
-    border: #40e0d0 solid 3px;
+    border: none;
     padding: 5px;
-    font-size: 18px;
+    font-size: 21px;
     width: 95%;
     border-radius: 3px;
     color: #E0E0E0;
-    margin-bottom: 10px;
-    transition: all .4s ease-in-out;
+    text-align: center;
+    width: fit-content;
 }
 
 #bookmarksOuter button.otherBookmarks-bookmark:hover {
     cursor: pointer;
-    background-color: #40e0d0;
+}
+
+.closeBtn-normal {
+    background-color: transparent;
+    border: none;
+    color: #666666;
+    padding: 5px;
+    transition: all .2s ease-in-out;
+    height: 40px;
+    width: 40px;
+    text-align: center;
+}
+
+.closeBtn-normal:hover {
+    cursor: pointer;
+    background-color: rgb(44, 44, 44);
+    color: #f5f5f5;
+}
+
+.moreBookmarksIcon:hover {
+    cursor: pointer;
 }
 
 .settingsOuter {
