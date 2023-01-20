@@ -2,7 +2,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Sora:wght@100;200;300;400;500;600;700;800&display=swap');
 
 :root {
-    --top-height: 53px;
+    --bookmarkTopHeight: 40px;
+    --top-height: 83px;
 }
 
 :focus {
@@ -62,8 +63,6 @@ body {
 
 .top {
     position: fixed;
-    display: flex;
-    align-items: center;
     top: 40px;
     background-color: #2D2D2D;
     /*background-color: #2D2D2D;*/
@@ -72,6 +71,12 @@ body {
     margin: 0;
     z-index: 10;
     margin-right: 50px;
+}
+
+.top .toptop {
+    display: flex;
+    align-items: center;
+    height: calc(var(--top-height) - var(--bookmarkTopHeight));
 }
 
 .top button.reloadBtn {
@@ -129,6 +134,67 @@ body {
 .top input[type="text"]:focus {
     outline: none;
     border: #40e0d0 solid 2px;
+}
+
+.top .bookmarkListTop {
+    height: var(--bookmarkTopHeight);
+    background-color: #2D2D2D;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    overflow-y: hidden;
+    overflow-x: scroll;
+    padding-bottom: 4px;
+}
+
+.top .bookmarkListTop::-webkit-scrollbar {
+    height: 0.5px;
+    background: transparent;
+}
+
+.top .bookmarkListTop::-webkit-scrollbar-corner {
+    background: transparent;
+}
+
+.top .bookmarkListTop::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.top .bookmarkListTop::-webkit-scrollbar-thumb {
+    background: #666666;
+    border-radius: 13px;
+}
+
+.top .bookmarkListTop .bookmark {
+    height: 25px;
+    margin-right: 5px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    border-radius: 13px;
+    padding: 1px 6px;
+    margin: 0 5px;
+    aspect-ratio: 16 / 1;
+}
+
+.top .bookmarkListTop .bookmark:hover {
+    background-color: #242424;
+    cursor: pointer;
+}
+
+.top .bookmarkListTop .bookmark p {
+    margin: 0px;
+    font-size: 13px;
+    color: #cecece;
+}
+
+.top .bookmarkListTop .bookmark img {
+    height: 17px;
+    aspect-ratio: 1 / 1;
+    margin-right: 4px;
 }
 
 #openBookmarksBtn {
