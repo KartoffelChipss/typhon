@@ -49,6 +49,12 @@
             <button class="closeBtn" type="button" onclick="toggleBookmarks()"><i class="material-icons" style="padding-top: 3px;">close</i></button>
 
             <h1>Lesezeichen</h1>
+            <h2>Lesezeichenleiste</h2>
+            <div class="bookmaks-content" id="favorites-content">
+
+            </div>
+
+            <h2>Weitere Lesezeichen</h2>
             <div class="bookmaks-content" id="bookmaks-content">
 
             </div>
@@ -61,135 +67,12 @@
             <button class="moveBtn" type="button" id="forwardBtn" onclick="goForward()"><i class="material-icons" style="padding-top: 3.5px; padding-left: 1px; padding-right: -1px;">chevron_right</i></button>
             <button class="reloadBtn" type="button" id="reloadBtn" onclick="reloadPage()"><i class="material-icons" style="padding-top: 3.5px;">refresh</i></button>
             <input class="url" id="url" type="text" placeholder="URL eingeben oder mit Google suchen" onkeydown="go()">
-            <button class="bookmarktBtn" id="bookmarkBtn" type="button" onclick="openAddBookmarks()"><i class="material-icons material-symbols-outlined" style="padding-top: 3.5px;" id="bookmarkBtnIcon">star</i></button>
+            <button class="bookmarktBtn" id="bookmarkBtn" type="button" onclick="openAddBookmarks()" style="margin-top: -3.5px;"><i class="material-icons material-symbols-outlined" id="bookmarkBtnIcon">star</i></button>
             <button class="settingsBtn" id="openBookmarksBtn" onclick="toggleBookmarks()"><i class="material-icons" style="padding-top: 3.5px;">bookmarks</i></button>
-            <button class="settingsBtn" id="settingsBtn" onclick="toggleSettings()"><i class="material-icons" style="padding-top: 3.5px;">settings</i></button>
+            <button class="settingsBtn" title="Einstellungen" id="settingsBtn" onclick="toggleSettings()"><i class="material-icons" style="padding-top: 3.5px;">settings</i></button>
         </div>
         <div class="bookmarkListTop" id="bookmarkListTop">
-            <div class="bookmark" data-link="https://strassburger.org/typhon" data-id="hahahahahha">
-                <img src="./assets/typhon_colored_4000x4000.png">
-                <p>Typhon</p>
-            </div>
-            <div class="bookmark" data-link="https://strassburger.org/typhon" data-id="hehehehehe">
-                <img src="./assets/typhon_colored_4000x4000.png">
-                <p>Typhon</p>
-            </div>
-            <div class="bookmark" data-link="https://strassburger.org/typhon" data-id="hehehehehe">
-                <img src="./assets/typhon_colored_4000x4000.png">
-                <p>Typhon</p>
-            </div>
-            <div class="bookmark" data-link="https://strassburger.org/typhon" data-id="hehehehehe">
-                <img src="./assets/typhon_colored_4000x4000.png">
-                <p>dwasdwasdwasdwasdwasdwasdwasdwas</p>
-            </div>
-            <div class="bookmark" data-link="https://strassburger.org/typhon" data-id="hehehehehe">
-                <img src="./assets/typhon_colored_4000x4000.png">
-                <p>Typhon</p>
-            </div>
-            <div class="bookmark" data-link="https://strassburger.org/typhon" data-id="hehehehehe">
-                <img src="./assets/typhon_colored_4000x4000.png">
-                <p>Typhon</p>
-            </div>
-            <div class="bookmark" data-link="https://strassburger.org/typhon" data-id="hehehehehe">
-                <img src="./assets/typhon_colored_4000x4000.png">
-                <p>Typhon</p>
-            </div>
-            <div class="bookmark" data-link="https://strassburger.org/typhon" data-id="hehehehehe">
-                <img src="./assets/typhon_colored_4000x4000.png">
-                <p>Typhon</p>
-            </div>
-            <div class="bookmark" data-link="https://strassburger.org/typhon" data-id="hehehehehe">
-                <img src="./assets/typhon_colored_4000x4000.png">
-                <p>Typhon</p>
-            </div>
-            <div class="bookmark" data-link="https://strassburger.org/typhon" data-id="hehehehehe">
-                <img src="./assets/typhon_colored_4000x4000.png">
-                <p>Typhon</p>
-            </div>
-            <div class="bookmark" data-link="https://strassburger.org/typhon" data-id="hehehehehe">
-                <img src="./assets/typhon_colored_4000x4000.png">
-                <p>Typhon</p>
-            </div>
-            <div class="bookmark" data-link="https://strassburger.org/typhon" data-id="hehehehehe">
-                <img src="./assets/typhon_colored_4000x4000.png">
-                <p>Typhon</p>
-            </div>
-            <div class="bookmark" data-link="https://strassburger.org/typhon" data-id="hehehehehe">
-                <img src="./assets/typhon_colored_4000x4000.png">
-                <p>Typhon</p>
-            </div>
-            <div class="bookmark" data-link="https://strassburger.org/typhon" data-id="hehehehehe">
-                <img src="./assets/typhon_colored_4000x4000.png">
-                <p>Typhon</p>
-            </div>
-            <div class="bookmark" data-link="https://strassburger.org/typhon" data-id="hehehehehe">
-                <img src="./assets/typhon_colored_4000x4000.png">
-                <p>Typhon</p>
-            </div>
-            <div class="bookmark" data-link="https://strassburger.org/typhon" data-id="hehehehehe">
-                <img src="./assets/typhon_colored_4000x4000.png">
-                <p>Typhon</p>
-            </div>
-            <div class="bookmark" data-link="https://strassburger.org/typhon" data-id="hehehehehe">
-                <img src="./assets/typhon_colored_4000x4000.png">
-                <p>Typhon</p>
-            </div>
-            <div class="bookmark" data-link="https://strassburger.org/typhon" data-id="hehehehehe">
-                <img src="./assets/typhon_colored_4000x4000.png">
-                <p>Typhon</p>
-            </div>
-            <div class="bookmark" data-link="https://strassburger.org/typhon" data-id="hehehehehe">
-                <img src="./assets/typhon_colored_4000x4000.png">
-                <p>Typhon</p>
-            </div>
-            <div class="bookmark" data-link="https://strassburger.org/typhon" data-id="hehehehehe">
-                <img src="./assets/typhon_colored_4000x4000.png">
-                <p>Typhon</p>
-            </div>
-            <div class="bookmark" data-link="https://strassburger.org/typhon" data-id="hehehehehe">
-                <img src="./assets/typhon_colored_4000x4000.png">
-                <p>Typhon</p>
-            </div>
-            <div class="bookmark" data-link="https://strassburger.org/typhon" data-id="hehehehehe">
-                <img src="./assets/typhon_colored_4000x4000.png">
-                <p>Typhon</p>
-            </div>
-            <div class="bookmark" data-link="https://strassburger.org/typhon" data-id="hehehehehe">
-                <img src="./assets/typhon_colored_4000x4000.png">
-                <p>Typhon</p>
-            </div>
-            <div class="bookmark" data-link="https://strassburger.org/typhon" data-id="hehehehehe">
-                <img src="./assets/typhon_colored_4000x4000.png">
-                <p>Typhon</p>
-            </div>
-            <div class="bookmark" data-link="https://strassburger.org/typhon" data-id="hehehehehe">
-                <img src="./assets/typhon_colored_4000x4000.png">
-                <p>Typhon</p>
-            </div>
-            <div class="bookmark" data-link="https://strassburger.org/typhon" data-id="hehehehehe">
-                <img src="./assets/typhon_colored_4000x4000.png">
-                <p>Typhon</p>
-            </div>
-            <div class="bookmark" data-link="https://strassburger.org/typhon" data-id="hehehehehe">
-                <img src="./assets/typhon_colored_4000x4000.png">
-                <p>Typhon</p>
-            </div>
-            <div class="bookmark" data-link="https://strassburger.org/typhon" data-id="hehehehehe">
-                <img src="./assets/typhon_colored_4000x4000.png">
-                <p>Typhon</p>
-            </div>
-            <div class="bookmark" data-link="https://strassburger.org/typhon" data-id="hehehehehe">
-                <img src="./assets/typhon_colored_4000x4000.png">
-                <p>Typhon</p>
-            </div>
-            <div class="bookmark" data-link="https://strassburger.org/typhon" data-id="hehehehehe">
-                <img src="./assets/typhon_colored_4000x4000.png">
-                <p>Typhon</p>
-            </div>
-            <div class="bookmark" data-link="https://strassburger.org/typhon" data-id="hehehehehe">
-                <img src="./assets/typhon_colored_4000x4000.png">
-                <p>Typhon</p>
-            </div>
+            
         </div>
     </div>
 
@@ -231,7 +114,7 @@
                 bottom: 0;
                 width: 100%;
                 height: 100%;
-                height: calc(100vh - 93px);
+                height: calc(100vh - (var(--top-height) + var(--bookmarkTopHeight) + var(--tabs-height)));
                 border: none;
                 z-index: 8;
             }

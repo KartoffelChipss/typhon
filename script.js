@@ -18,6 +18,16 @@ function generateId(prefix) {
     return prefix + Date.now().toString(32) + Math.random().toString(16).replace(/\./g, '');
 }
 
+function adjustBookmarksheight() {
+    if (document.getElementById("bookmarkListTop").childElementCount <= 0) {
+        document.documentElement.style.setProperty("--bookmarkTopHeight", "0px");
+    } else {
+        document.documentElement.style.setProperty("--bookmarkTopHeight", "40px");
+    }
+}
+
+adjustBookmarksheight()
+
 tabGroup.setDefaultTab({
     title: "Neuer Tab",
     src: "file://" +  __dirname + "/public/defaultPage.html",
@@ -65,9 +75,7 @@ tabGroup.on("tab-active", (tab, tabGroup) => {
     }
 
     tab.webview.addEventListener("page-favicon-updated", (favicons) => {
-        console.log("Favicon updated!")
         let favicon = favicons.favicons[favicons.favicons.length - 1];
-        console.log(favicon)
         if (favicon) {
             tab.setIcon(favicon);
         } else {
@@ -76,7 +84,6 @@ tabGroup.on("tab-active", (tab, tabGroup) => {
     })
 
     tab.webview.addEventListener("page-title-updated", (title) => {
-        console.log("Title updated!");
         tab.setTitle(title.title);
     });
 
@@ -559,6 +566,10 @@ function addBookmark() {
     document.getElementById("bookmarkModal").style.display = "none";
 }
 
+function delBookmark(bookmarkid, folder) {
+    ipc.send("delBookmark", bookmarkid, folder);
+}
+
 function openAddBookmarks() {
     let activeTab = tabGroup.getActiveTab();
     let webviewUrl = activeTab.webview.getURL();
@@ -680,8 +691,19 @@ ipc.on("inspectElement", (e, x, y) => {
 
 ipc.on("bookmarks", (e, bookmarks) => {
     const bookmarkContainer = document.getElementById("bookmaks-content");
+    const favoritesContainer = document.getElementById("favorites-content");
+    const bookmarkListTop = document.getElementById("bookmarkListTop");
     bookmarkContainer.innerHTML = "";
     bookmarks.moreBookmarks.items.forEach(bookmark => {
-        bookmarkContainer.innerHTML += `<div style="display: flex; justify-content: space-between; align-items: center;" id="moreBookmarks_${bookmark.id}"><div style="display: flex; justify-content: space-between; align-items: center;"><img src="${bookmark.icon}" onclick="openLinkinnewTab('${bookmark.url}'); toggleBookmarks();" style="height: 25px;" class="moreBookmarksIcon"><button type="button" onclick="openLinkinnewTab('${bookmark.url}'); toggleBookmarks();" class="otherBookmarks-bookmark">${bookmark.title}</button></div><button type="button" class="closeBtn-normal" onclick="delBookmark('${bookmark.id}')"><i class="material-icons" style="padding-top: 3px;">close</i></button></div>`;
+        bookmarkContainer.innerHTML += `<div style="display: flex; justify-content: space-between; align-items: center;" id="moreBookmarks_${bookmark.id}"><div style="display: flex; justify-content: space-between; align-items: center;"><img src="${bookmark.icon}" onclick="openLinkinnewTab('${bookmark.url}'); toggleBookmarks();" style="height: 25px;" class="moreBookmarksIcon"><button type="button" onclick="openLinkinnewTab('${bookmark.url}'); toggleBookmarks();" class="otherBookmarks-bookmark">${bookmark.title}</button></div><button type="button" class="closeBtn-normal" onclick="delBookmark('${bookmark.id}', 'moreBookmarks')"><i class="material-icons" style="padding-top: 3px;">close</i></button></div>`;
     });
+
+    bookmarkListTop.innerHTML = "";
+    favoritesContainer.innerHTML = "";
+    bookmarks.favorites.items.forEach(bookmark => {
+        bookmarkListTop.innerHTML += `<div class="bookmark" onclick="openLinkinnewTab('${bookmark.url}')" data-link="${bookmark.url}" data-id="favorites_${bookmark.id}"><img src="${bookmark.icon}"><p>${bookmark.title}</p></div>`;
+        favoritesContainer.innerHTML += `<div style="display: flex; justify-content: space-between; align-items: center;" id="moreBookmarks_${bookmark.id}"><div style="display: flex; justify-content: space-between; align-items: center;"><img src="${bookmark.icon}" onclick="openLinkinnewTab('${bookmark.url}'); toggleBookmarks();" style="height: 25px;" class="moreBookmarksIcon"><button type="button" onclick="openLinkinnewTab('${bookmark.url}'); toggleBookmarks();" class="otherBookmarks-bookmark">${bookmark.title}</button></div><button type="button" class="closeBtn-normal" onclick="delBookmark('${bookmark.id}', 'favorites')"><i class="material-icons" style="padding-top: 3px;">close</i></button></div>`;
+    });
+
+    adjustBookmarksheight();
 });

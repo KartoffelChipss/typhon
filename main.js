@@ -362,10 +362,18 @@ app.whenReady().then(async () => {
         }
 
         let bookmarks = store.get("bookmarks");
-        bookmarks[folder].items.unshift(bookmark);
+        bookmarks[folder].items.push(bookmark);
         store.set(`bookmarks`, bookmarks);
 
         refreshBookmarks(mainWindow)
+      });
+
+      ipcMain.on("delBookmark", (e, bookmarkid, folder) => {
+        let bookmarks = store.get("bookmarks");
+        bookmarks[folder].items.splice(bookmarks[folder].items.findIndex(item => item.id === bookmarkid), 1);
+        store.set("bookmarks", bookmarks);
+
+        refreshBookmarks(mainWindow);
       });
     
       mainWindow.webContents.on('did-finish-load', () => {
@@ -542,6 +550,15 @@ app.whenReady().then(async () => {
                   accelerator: "CommandOrControl+Alt+D",
                   click: () => {
                     inspecElement(params.x, params.y)
+                  }
+                },
+                {
+                  type: "separator"
+                },
+                {
+                  label: 'Lesezeichen löschen',
+                  click: () => {
+                    console.log(params)
                   }
                 }
               ],
