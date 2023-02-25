@@ -1,6 +1,6 @@
 // Modules to control application life and create native browser window
 const { Console } = require('console')
-const {app, BrowserWindow, Menu, MenuItem, globalShortcut, webContents, screen, clipboard} = require('electron')
+const {app, BrowserWindow, Menu, MenuItem, globalShortcut, webContents, screen, clipboard, session} = require('electron')
 const { webFrame, ipcRenderer } = require('electron/renderer')
 const path = require('path')
 const { ElectronBlocker } = require('@cliqz/adblocker-electron');
@@ -550,15 +550,6 @@ app.whenReady().then(async () => {
                   accelerator: "CommandOrControl+Alt+D",
                   click: () => {
                     inspecElement(params.x, params.y)
-                  }
-                },
-                {
-                  type: "separator"
-                },
-                {
-                  label: 'Lesezeichen löschen',
-                  click: () => {
-                    console.log(params)
                   }
                 }
               ],

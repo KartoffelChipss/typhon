@@ -1,7 +1,7 @@
 {
   "name": "typhon",
   "productName": "Typhon",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "A VERY nice web browser!",
   "main": "main.js",
   "scripts": {

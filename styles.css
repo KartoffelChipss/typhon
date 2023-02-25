@@ -332,6 +332,7 @@ body {
     padding: 15px;
     border-radius: 7px;
     animation: grow 0.15s ease;
+    box-shadow: 0px 0px 34px -3px rgb(0 0 0 / 39%);
 }
 
 #bookmarkModal .content {
@@ -455,6 +456,7 @@ body {
     width: 30%;
     overflow-x: hidden;
     overflow-y: scroll;
+    box-shadow: 0px 0px 34px -3px rgb(0 0 0 / 39%);
 }
 
 .settingsOuter .settings::-webkit-scrollbar {
